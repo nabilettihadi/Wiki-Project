@@ -24,6 +24,12 @@ class Tag
         return $results;
     }
 
+    public function getAllTags()
+    {
+        $this->db->query('SELECT * FROM tags');
+        return $this->db->resultSet();
+    }
+
     public function addTag($data)
     {
         $this->db->query('INSERT INTO tags (tag_name, category_id) VALUES(:tag_name, :category_id)');
@@ -69,10 +75,9 @@ class Tag
                 LEFT JOIN categories
                 ON tags.category_id = categories.category_id';
 
-        if (!empty($categoryId)) {
-            $sql .= ' WHERE tags.category_id = :category_id';
-            $this->db->bind(':category_id', $categoryId);
-        }
+if ($categoryId !== null && is_numeric($categoryId)) {
+    $sql .= ' WHERE tags.category_id = :category_id';
+    $this->db->bind(':category_id', $categoryId);}
 
         $this->db->query($sql);
 
@@ -80,4 +85,3 @@ class Tag
     }
 }
 ?>
-

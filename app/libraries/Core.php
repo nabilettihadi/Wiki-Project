@@ -55,4 +55,13 @@ class Core
             return $url;
         }
     }
+
+    public function redirect($page) {
+        header('location: ' . URLROOT . '/' . $page);
+        exit();
+    }
+
+    public function flash($key, $message) {
+        $_SESSION[$key] = $message;
+    }
 } 

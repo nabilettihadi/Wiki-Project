@@ -1,76 +1,65 @@
 <?php
-class Wiki
-{
+
+class Wiki {
     private $db;
-
-    public function __construct()
-    {
-        $this->db = new Database;
+    private $wikiModel;
+    public function __construct() {
+    $this->db = new Database;
     }
 
-    public function getProjets()
-    {
-        $this->db->query('SELECT *,
-                            projets.id_project as projetId,
-                            users.id as userId,
-                            projets.creation_date as projetCreated,
-                            users.created_at as userCreated
-                            FROM projets
-                            INNER JOIN users
-                            ON projets.user_id = users.id
-                            ORDER BY projets.creation_date DESC
-                            ');
-
-        $results = $this->db->resultSet();
-
-        return $results;
+    // Récupérer tous les wikis
+    public function getAllWikis() {
+        $this->db->query('SELECT * FROM wikis');
+        return $this->db->resultSet();
     }
 
-    public function addProjets($data)
-    {
-        $this->db->query('INSERT INTO projets (nom_projet, user_id) VALUES(:nom_projet, :user_id)');
-        $this->db->bind(':nom_projet', $data['nom_projet']);
-        $this->db->bind(':user_id', $data['user_id']);
-
-        if ($this->db->execute()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public function deleteProjet($id)
-    {
-        $this->db->query('DELETE FROM projets WHERE id_project = :projet_id');
-        $this->db->bind(':projet_id', $id);
-
-        if ($this->db->execute()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public function updateProjet($data)
-    {
-        $this->db->query('UPDATE projets SET nom_projet = :nom_projet WHERE id_project = :id');
-        $this->db->bind(':id', $data['id']);
-        $this->db->bind(':nom_projet', $data['nom_projet']);
-
-        if ($this->db->execute()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public function getProjetById($id)
-    {
-        $this->db->query('SELECT * FROM projets WHERE id_project = :id');
+    // Récupérer un wiki par son ID
+    public function getWikiById($id) {
+        $this->db->query('SELECT * FROM wikis WHERE wiki_id = :id');
         $this->db->bind(':id', $id);
-
-        $row = $this->db->single();
-
-        return $row;
+        return $this->db->single();
     }
+
+    // Ajouter un wiki
+    public function addWiki($data) {
+        $this->db->query('INSERT INTO wikis (title, content, author_id, category_id, created_at, updated_at, archived) 
+                          VALUES (:title, :content, :author_id, :category_id, :created_at, :updated_at, :archived)');
+        // Bind values
+        $this->db->bind(':title', $data['title']);
+        $this->db->bind(':content', $data['content']);
+        $this->db->bind(':author_id', $data['author_id']);
+        $this->db->bind(':category_id', $data['category_id']);
+        $this->db->bind(':created_at', $data['created_at']);
+        $this->db->bind(':updated_at', $data['updated_at']);
+        $this->db->bind(':archived', $data['archived']);
+
+        // Execute
+        return $this->db->execute();
+    }
+
+    // Mettre à jour un wiki
+    public function updateWiki($data) {
+        $this->db->query('UPDATE wikis SET title = :title, content = :content, category_id = :category_id, updated_at = :updated_at, archived = :archived 
+                          WHERE wiki_id = :id');
+        // Bind values
+        $this->db->bind(':id', $data['id']);
+        $this->db->bind(':title', $data['title']);
+        $this->db->bind(':content', $data['content']);
+        $this->db->bind(':category_id', $data['category_id']);
+        $this->db->bind(':updated_at', $data['updated_at']);
+        $this->db->bind(':archived', $data['archived']);
+
+        // Execute
+        return $this->db->execute();
+    }
+
+    // Supprimer un wiki par son ID
+    public function deleteWiki($id) {
+        $this->db->query('DELETE FROM wikis WHERE wiki_id = :id');
+        $this->db->bind(':id', $id);
+        return $this->db->execute();
+    }
+
+
 }
+
