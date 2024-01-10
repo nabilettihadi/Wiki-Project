@@ -9,6 +9,8 @@
     {
         // Your code for the index method
     }
+
+    
     public function register()
     {
         // Check for POST

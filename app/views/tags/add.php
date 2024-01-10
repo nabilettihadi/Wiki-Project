@@ -5,7 +5,7 @@
 <div class="card bg-light mt-5 p-5">
     <h2 class="text-3xl font-bold mb-4">ADD Tags</h2>
 
-    <form action="<?php echo URLROOT; ?>/Tags/add" method="post">
+    <form action="<?php echo URLROOT; ?>/tags/add" method="post">
         <div class="mb-4">
             <label for="tag_name" class="form-label">Tag Name: <sup>*</sup></label>
             <input type="text" name="tag_name" class="form-control <?php echo (!empty($data['title_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['tag_name']; ?>">

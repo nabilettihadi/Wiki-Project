@@ -10,24 +10,20 @@ class Tag
 
     public function getTags()
     {
-        $this->db->query('SELECT tags.tag_id as tagId,
-                                tags.tag_name as tagName,
-                                categories.category_id as categoryId,
-                                categories.category_name as categoryName
+        $this->db->query('SELECT *,
+                            tags.tag_id as tagId,
+                            tags.tag_name as tagName,
+                            categories.category_id as categoryId,
+                            categories.category_name as categoryName
                             FROM tags
                             LEFT JOIN categories
                             ON tags.category_id = categories.category_id
-                            ORDER BY tags.tag_id DESC');
+                            ORDER BY tags.tag_id DESC
+                            ');
 
         $results = $this->db->resultSet();
 
         return $results;
-    }
-
-    public function getAllTags()
-    {
-        $this->db->query('SELECT * FROM tags');
-        return $this->db->resultSet();
     }
 
     public function addTag($data)
@@ -36,7 +32,11 @@ class Tag
         $this->db->bind(':tag_name', $data['tag_name']);
         $this->db->bind(':category_id', $data['category_id']);
 
-        return $this->db->execute();
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function deleteTag($id)
@@ -44,7 +44,11 @@ class Tag
         $this->db->query('DELETE FROM tags WHERE tag_id = :tag_id');
         $this->db->bind(':tag_id', $id);
 
-        return $this->db->execute();
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function updateTag($data)
@@ -54,7 +58,11 @@ class Tag
         $this->db->bind(':tag_name', $data['tag_name']);
         $this->db->bind(':category_id', $data['category_id']);
 
-        return $this->db->execute();
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function getTagById($id)
@@ -62,26 +70,42 @@ class Tag
         $this->db->query('SELECT * FROM tags WHERE tag_id = :id');
         $this->db->bind(':id', $id);
 
-        return $this->db->single();
+        $row = $this->db->single();
+
+        return $row;
     }
 
-    public function getTagsByCategory($categoryId = null)
-    {
-        $sql = 'SELECT tags.tag_id as tagId,
-                        tags.tag_name as tagName,
-                        categories.category_id as categoryId,
-                        categories.category_name as categoryName
-                FROM tags
-                LEFT JOIN categories
-                ON tags.category_id = categories.category_id';
+    public function getTagsByCategory($categoryId)
+{
+    $sql = 'SELECT *,
+            tags.tag_id as tagId,
+            tags.tag_name as tagName,
+            categories.category_id as categoryId,
+            categories.category_name as categoryName
+            FROM tags
+            LEFT JOIN categories
+            ON tags.category_id = categories.category_id';
 
-if ($categoryId !== null && is_numeric($categoryId)) {
-    $sql .= ' WHERE tags.category_id = :category_id';
-    $this->db->bind(':category_id', $categoryId);}
-
-        $this->db->query($sql);
-
-        return $this->db->resultSet();
+    if (!empty($categoryId)) {
+        $sql .= ' WHERE tags.category_id = :category_id';
     }
+
+    $this->db->query($sql);
+
+    if (!empty($categoryId)) {
+        $this->db->bind(':category_id', $categoryId);
+    }
+
+    $results = $this->db->resultSet();
+
+    return $results;
 }
-?>
+public function getTotalTags()
+    {
+        $this->db->query('SELECT COUNT(*) as total FROM tags');
+        $row = $this->db->single();
+        return $row->total;
+
+    }
+
+}
