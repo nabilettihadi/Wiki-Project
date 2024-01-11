@@ -3,6 +3,8 @@
 class Categories extends Controller
 {
     public $categoryModel;
+    public $tagModel;
+    public $wikiModel;
 
     public function __construct()
     {
@@ -11,15 +13,49 @@ class Categories extends Controller
         }
 
         $this->categoryModel = $this->model('Category');
+        $this->tagModel = $this->model('Tag');
+        $this->wikiModel = $this->model('Wiki');
     }
+
+    // public function index()
+    // {
+    //     $categories = $this->categoryModel->getCategories();
+    //     $data = [
+    //         'categories' => $categories
+    //     ];
+    //     $this->view('category/index', $data);
+    // }
 
     public function index()
     {
         $categories = $this->categoryModel->getCategories();
+        $totalCategories = $this->categoryModel->getTotalCategories();
+        $totalTags = $this->tagModel->getTotalTags();
+        $totalWikis = $this->wikiModel->getTotalWikisCount();
         $data = [
-            'categories' => $categories
+            'categories' => $categories,
+            'totalCategories' => $totalCategories,
+            'totalTags' => $totalTags,
+            'totalWikis' => $totalWikis,
         ];
+
+
+        // $this->view('category/index', $data);
+        $this->view('dashboard/dashboard', $data);
+    }
+
+    public function index2()
+    {
+        $categories = $this->categoryModel->getCategories();
+        $totalCategories = $this->categoryModel->getTotalCategories();
+        $data = [
+            'categories' => $categories,
+            'totalCategories' => $totalCategories,
+        ];
+
+
         $this->view('category/index', $data);
+
     }
 
     public function add()
@@ -28,7 +64,7 @@ class Categories extends Controller
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
             $data = [
                 'category_name' => trim($_POST['category_name']),
-                'category_id' => $_SESSION['user_id'], 
+                'category_id' => $_SESSION['user_id'],
                 'category_name_err' => ''
             ];
 
@@ -60,12 +96,13 @@ class Categories extends Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($this->categoryModel->deleteCategory($id)) {
                 flash('category_message', 'Category Deleted');
+                redirect('categories');
             } else {
-                flash('category_message', 'Something went wrong', 'alert alert-danger');
+                die('Something went wrong');
             }
+        } else {
+            redirect('categories');
         }
-
-        redirect('categories');
     }
 
     public function edit($id)
@@ -95,8 +132,11 @@ class Categories extends Controller
         } else {
             $category = $this->categoryModel->getCategoryById($id);
 
-            if (!$category || $category->category_id != $_SESSION['user_id']) {
-                flash('category_message', 'Invalid Category', 'alert alert-danger');
+            if (!$category) {
+                redirect('categories');
+            }
+
+            if ($category->category_id != $_SESSION['user_id']) {
                 redirect('categories');
             }
 

@@ -1,155 +1,218 @@
 <?php
 
-class Wikis extends Controller {
-    private $wikiModel;
-    private $categoryModel;  // Add this line
+class Wikis extends Controller
+{
+    public $wikiModel;
+    public $CategoryModel;
+    public $tagModel;
+    public $totalWikis;
 
-    public function __construct() {
+    public function __construct()
+    {
+        if (!isLoggedIn()) {
+            redirect('users/login');
+        }
+
         $this->wikiModel = $this->model('Wiki');
-        $this->categoryModel = $this->model('Category');  // Add this line
+        $this->tagModel = $this->model('Tag');
+        $this->CategoryModel = $this->model('Category');
     }
-    
 
-    // Page d'accueil des wikis
     public function index() {
-        // Récupérer tous les wikis
-        $wikis = $this->wikiModel->getAllWikis();
+        $categories = $this->CategoryModel->getCategories();
+        $totalCategories = $this->CategoryModel->getTotalCategories();
+        $totalTags =  $this->tagModel->getTotalTags();
+        $totalWikis = $this->wikiModel->getTotalWikisCount();
 
-        // Charger la vue
-        $this->view('wikis/index', ['wikis' => $wikis]);
+        $data = [
+            'categories' => $categories,
+            'totalCategories' => $totalCategories,
+            'totalTags'=> $totalTags,
+            'totalWikis' => $totalWikis,
+
+        ];
+
+
+        $this->view('dashboard/dashboard', $data);
+
     }
 
-    // Page de création d'un wiki
-    public function create() {
+    public function index2(){
 
-        // Vérifier si l'utilisateur est connecté
-        if (!isLoggedIn()) {
-            redirect('users/login');
-        }
+        $wikis = $this->wikiModel->getWikis();
+        $data = [
+            'wikis' => $wikis,
+        ];
 
-        // Get categories from the database
-        $categories = $this->categoryModel->getCategories();
 
-        // Vérifier si le formulaire est soumis
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Debugging
-            var_dump($_POST);
-            
-            // Sanitization et validation des données du formulaire
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-            
-            // Debugging
-            var_dump($_POST);
+        // $this->view('category/index', $data);
+        $this->view('wikis/index', $data);
+
+    }
+
+
+
+    public function add()
+    {
+        // var_dump($_SESSION['user_id']);
         
+        
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Sanitize and validate input
+            $title = htmlspecialchars(trim($_POST['title']));
+            $content = htmlspecialchars(trim($_POST['content']));
+            $category_id = $_POST['category_id'];
+            $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : '';
+
+            // Assurez-vous que $_POST['tags'] existe et est une chaîne avant d'utiliser explode
+            $tags = isset($_POST['tags']) ? (is_array($_POST['tags']) ? $_POST['tags'] : explode(',', $_POST['tags'])) : [];
+
+
+            // Traiter les données du formulaire (ex: enregistrer dans la base de données)...
             $data = [
-                'title' => trim($_POST['title']),
-                'content' => trim($_POST['content']),
-                'author_id' => $_SESSION['user_id'],
-                'category_id' => trim($_POST['category_id']),
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-                'archived' => 0,
+                'title' => $title,
+                'content' => $content,
+                'category_id' => $category_id,
+                'author_id'=> $user_id,
+                'tags' => $tags,
             ];
-        
-            // Debugging
-            var_dump($data);
 
-            // Ajouter le wiki à la base de données
             if ($this->wikiModel->addWiki($data)) {
-                // Rediriger vers la page d'accueil des wikis
-                redirect('wikis/index');
+                flash('wiki_message', 'Wiki ajouté avec succès');
+                redirect('wikis');
             } else {
-                die('Something went wrong');
+                die('Quelque chose s\'est mal passé');
             }
-        } else {
-            // Charger la vue du formulaire de création
-            $this->view('wikis/create', ['categories' => $categories]);
         }
+
+        // Charger la vue avec les données nécessaires (y compris la liste des tags)
+        $wikis = $this->wikiModel->getWikis();
+
+        // Initialize CategoryModel before using it
+        $this->CategoryModel = $this->model('Category');
+        $categories = $this->CategoryModel->getCategories();
+
+        $this->tagModel = $this->model('tag');
+
+        $categoryTags = [];
+        foreach ($categories as $category) {
+            $tags = $this->tagModel->getTagsByCategory($category->category_id);
+            $categoryTags[$category->category_id] = $tags;
+        }
+
+        $data = [
+            'categories' => $categories,
+            'tagsList' => $this->wikiModel->getTags(), // Assuming you want to get tags from wikiModel
+            'categoryTags' => $categoryTags,
+            'wikis' => $wikis,
+        ];
+
+        $this->view('wikis/add', $data);
+        echo "<script> console.log(" . json_encode($data) . ")</script>";
     }
 
-    // Page d'édition d'un wiki
-    public function edit($id) {
-        // Vérifier si l'utilisateur est connecté
-        if (!isLoggedIn()) {
-            redirect('users/login');
+
+
+    public function statistics()
+    {
+        $totalWikis = $this->wikiModel->getTotalWikisCount();
+
+        $data = [
+            'totalWikis' => $totalWikis,
+        ];
+
+        $this->view('dashboard/dashboard', $data);
+
+    }
+
+    public function edit($id)
+    {
+        $wiki = $this->wikiModel->getWikiById($id);
+
+        if (!$wiki) {
+            flash('wiki_message', 'Wiki not found', 'alert alert-danger');
+            redirect('wikis');
         }
 
-        // Vérifier si le wiki existe
-        $wiki = $this->wikiModel->getWikiById($id);
-        if (!$wiki) {
-            // Si le wiki n'existe pas, rediriger vers la page d'accueil des wikis
-            redirect('wikis/index');
-        }
-        function isAdmin() {
-            // Check if the user is logged in and has the 'admin' role
-            return (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin');
-        }
-        // Vérifier si l'utilisateur est l'auteur du wiki ou un administrateur
-        if ($wiki->author_id != $_SESSION['user_id'] && !isAdmin()) {
-            // Si l'utilisateur n'est pas l'auteur ni un administrateur, rediriger vers la page d'accueil des wikis
-            redirect('wikis/index');
-        }
-        $categories = $this->categoryModel->getCategories();
-        // Vérifier si le formulaire est soumis
+        $categories = $this->wikiModel->getCategories();
+        $tags = $this->wikiModel->getTags();
+
+        $data = [
+            'wiki' => $wiki,
+            'categories' => $categories,
+            'tags' => $tags,
+        ];
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Sanitization et validation des données du formulaire
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            // Sanitize and validate input
+
             $data = [
                 'id' => $id,
                 'title' => trim($_POST['title']),
                 'content' => trim($_POST['content']),
-                'category_id' => trim($_POST['category_id']),
-                'updated_at' => date('Y-m-d H:i:s'),
-                'archived' => 0, // Réinitialiser l'état d'archivage lors de la modification
+                'category_id' => $_POST['category_id'],
+                'tags' => $_POST['tags'],
+                'categories' => $categories,
             ];
 
-            // Mettre à jour le wiki dans la base de données
             if ($this->wikiModel->updateWiki($data)) {
-                // Rediriger vers la page d'accueil des wikis
-                redirect('wikis/index');
+                flash('wiki_message', 'Wiki Updated');
+                redirect('wikis');
             } else {
                 die('Something went wrong');
             }
         } else {
-            // Charger la vue du formulaire d'édition
-            $this->view('wikis/edit', ['wiki' => $wiki]);
+            $this->view('wikis/edit', $data);
         }
     }
 
-    // Page de suppression d'un wiki
-    public function delete($id) {
-        // Vérifier si l'utilisateur est connecté
-        if (!isLoggedIn()) {
-            redirect('users/login');
-        }
+    public function getTagsByCategory($categoryId)
+    {
+        // Load model
+        $this->wikiModel = $this->model('Wiki');
 
-        // Vérifier si le wiki existe
-        $wiki = $this->wikiModel->getWikiById($id);
-        if (!$wiki) {
-            // Si le wiki n'existe pas, rediriger vers la page d'accueil des wikis
-            redirect('wikis/index');
-        }
+        // Get tags associated with the selected category
+        $tags = $this->wikiModel->getTagsByCategory($categoryId);
 
-        // Vérifier si l'utilisateur est l'auteur du wiki ou un administrateur
-        if ($wiki->author_id != $_SESSION['user_id'] && !isAdmin()) {
-            // Si l'utilisateur n'est pas l'auteur ni un administrateur, rediriger vers la page d'accueil des wikis
-            redirect('wikis/index');
-        }
+        // Convert the result to JSON and echo it
+        echo json_encode($tags);
+    }
 
-        // Vérifier si le formulaire de suppression est soumis
+    public function delete($id)
+    {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Supprimer le wiki de la base de données
+            // Call the model method to delete the wiki
             if ($this->wikiModel->deleteWiki($id)) {
-                // Rediriger vers la page d'accueil des wikis
-                redirect('wikis/index');
+                flash('wiki_message', 'Wiki Deleted');
+                redirect('wikis/index2');
             } else {
                 die('Something went wrong');
             }
         } else {
-            // Charger la vue de confirmation de suppression
-            $this->view('wikis/delete', ['wiki' => $wiki]);
+            // Display confirmation form
+            $wiki = $this->wikiModel->getWikiById($id);
+
+            if (!$wiki) {
+                flash('wiki_message', 'Wiki not found', 'alert alert-danger');
+                redirect('wikis');
+            }
+
+            $data = [
+                'wiki' => $wiki,
+            ];
+
+            $this->view('wikis/delete', $data); 
         }
     }
 
-   
+    public function archive($id)
+    {
+        if ($this->wikiModel->archiveWiki($id)) {
+            // Redirect or show success message
+            flash('wiki_message', 'Wiki Archived');
+            redirect('wikis/index2');
+        } else {
+            die('Something went wrong');
+        }
+    }
 }
