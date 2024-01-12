@@ -1,38 +1,36 @@
-<!-- views/wikis/edit.php -->
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
-<div class="row mb-3">
-    <div class="col-md-6">
-        <h1>Edit Wiki</h1>
-    </div>
+<div class="flex items-center justify-center my-8">
+    <h1 class="text-4xl font-extrabold text-blue-500">Edit Wiki</h1>
 </div>
 
-<form action="<?php echo URLROOT; ?>/wikis/edit/<?php echo $data['wiki']->wiki_id; ?>" method="post">
-    <div class="mb-3">
-        <label for="title" class="form-label">Title</label>
-        <input type="text" name="title" class="form-control" value="<?php echo $data['wiki']->title; ?>">
+<form action="<?php echo URLROOT; ?>/wikis/edit/<?php echo $data['wiki']->wiki_id; ?>" method="post" class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+    <div class="mb-4">
+        <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">Title</label>
+        <input type="text" name="title" class="form-input w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500" value="<?php echo $data['wiki']->title; ?>">
     </div>
-    <div class="mb-3">
-        <label for="content" class="form-label">Content</label>
-        <textarea name="content" class="form-control"><?php echo $data['wiki']->content; ?></textarea>
+    <div class="mb-4">
+        <label for="content" class="block text-sm font-semibold text-gray-700 mb-2">Content</label>
+        <textarea name="content" class="form-input w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"><?php echo $data['wiki']->content; ?></textarea>
     </div>
-    <div class="mb-3">
-        <label for="category" class="form-label">Category</label>
-        <select name="category_id" class="form-select">
+    <div class="mb-4">
+        <label for="category" class="block text-sm font-semibold text-gray-700 mb-2">Category</label>
+        <select name="category_id" class="form-select w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500">
             <?php foreach ($data['categories'] as $category): ?>
                 <option value="<?php echo $category->category_id; ?>" <?php echo ($category->category_id == $data['wiki']->category_id) ? 'selected' : ''; ?>><?php echo $category->category_name; ?></option>
             <?php endforeach; ?>
         </select>
     </div>
-    <div class="mb-3">
-        <label for="tags" class="form-label">Tags</label>
-        <select name="tags[]" class="form-select" multiple>
+    <div class="mb-4">
+        <label for="tags" class="block text-sm font-semibold text-gray-700 mb-2">Tags</label>
+        <select name="tags[]" class="form-select w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500" multiple>
             <?php foreach ($data['tags'] as $tag): ?>
                 <option value="<?php echo $tag->tag_id; ?>" <?php echo (property_exists($data['wiki'], 'tags') && is_array($data['wiki']->tags) && in_array($tag->tag_id, $data['wiki']->tags)) ? 'selected' : ''; ?>><?php echo $tag->tag_name; ?></option>
             <?php endforeach; ?>
         </select>
     </div>
-    <button type="submit" class="btn btn-primary">Update Wiki</button>
+    <button type="submit" class="btn btn-primary bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline-blue">Update Wiki</button>
 </form>
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
+

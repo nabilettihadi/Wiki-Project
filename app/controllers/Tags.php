@@ -1,7 +1,7 @@
 <?php
 class Tags extends Controller
 {
-    public $tagModel;
+   public $tagModel;
     public $categoryModel;
 
     public $wikiModel;
@@ -21,12 +21,12 @@ class Tags extends Controller
     // {
     //     $categories = $this->categoryModel->getCategories();
     //     $tags = $this->tagModel->getTags();
-
+    
     //     $data = [
     //         'tags' => $tags,
     //         'categories' => $categories
     //     ];
-
+    
     //     $this->view('tags/index', $data);
     // }
 
@@ -34,13 +34,13 @@ class Tags extends Controller
     {
         $categories = $this->categoryModel->getCategories();
         $totalCategories = $this->categoryModel->getTotalCategories();
-        $totalTags = $this->tagModel->getTotalTags();
+        $totalTags =  $this->tagModel->getTotalTags();
         $totalWikis = $this->wikiModel->getTotalWikisCount();
         $data = [
             'categories' => $categories,
             'totalCategories' => $totalCategories,
-            'totalTags' => $totalTags,
-            'totalWikis' => $totalWikis,
+            'totalTags'=> $totalTags,
+            'totalWikis'=>$totalWikis,
         ];
 
 
@@ -119,7 +119,7 @@ class Tags extends Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($this->tagModel->deleteTag($id)) {
                 flash('tag_message', 'Tag Deleted');
-                redirect('tags');
+                redirect('tags/index2');
             } else {
                 die('Something went wrong');
             }
@@ -131,18 +131,18 @@ class Tags extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
+    
             $data = [
                 'id' => $id,
                 'tag_name' => trim($_POST['tag_name']),
                 'category_id' => $_SESSION['user_id'],
                 'title_err' => ''
             ];
-
+    
             if (empty($data['tag_name'])) {
                 $data['title_err'] = 'Please enter a name';
             }
-
+    
             if (empty($data['title_err'])) {
                 if ($this->tagModel->updateTag($data)) {
                     flash('tag_message', 'Tag Updated');
@@ -155,21 +155,21 @@ class Tags extends Controller
             }
         } else {
             $tag = $this->tagModel->getTagById($id);
-
+    
             if (!$tag) {
                 redirect('tags');
             }
-
+    
             if ($tag->category_id != $_SESSION['user_id']) {
                 redirect('tags');
             }
-
+    
             $data = [
                 'id' => $id,
                 'tag_name' => $tag->tag_name,
                 'title_err' => ''
             ];
-
+    
             $this->view('tags/edit', $data);
         }
     }
@@ -178,21 +178,21 @@ class Tags extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
+    
             $categoryId = isset($_POST['category_id']) ? $_POST['category_id'] : null;
-
+    
             $tags = $this->tagModel->getTagsByCategory($categoryId);
-
+    
             $data = [
                 'tags' => $tags
             ];
-
+    
             echo json_encode($data);
         } else {
             redirect('tags');
         }
     }
 
-
-
+    
+    
 }

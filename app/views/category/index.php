@@ -2,42 +2,42 @@
 
 <?php flash('category_message'); ?>
 
-<div class="row mb-3">
-    <div class="col-md-6">
-        <h1>Categories</h1>
-    </div>
-    <div class="col-md-6 text-right">
-        <a href="<?php echo URLROOT; ?>/Categories/add" class="btn btn-primary">
-            <i class="fa fa-pencil"></i> Add Category
-        </a>
-    </div>
+<div class="flex justify-between items-center mb-8">
+    <h1 class="text-4xl font-bold text-blue-800">Categories</h1>
+    <a href="<?php echo URLROOT; ?>/Categories/add"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+        <i class="fa fa-pencil"></i> Add Category
+    </a>
 </div>
 
 <?php if (isset($data['categories']) && is_array($data['categories'])): ?>
-    <?php foreach ($data['categories'] as $category): ?>
-        <div class="card card-body mb-3">
-            <h4 class="card-title">
-                <?php echo $category->category_name; ?>
-            </h4>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <?php foreach ($data['categories'] as $category): ?>
+            <div class="bg-gradient-to-r from-blue-500 to-blue-800 text-white rounded-lg shadow-lg p-6 mb-6 relative">
+                <h4 class="text-2xl font-semibold mb-4">
+                    <?php echo $category->category_name; ?>
+                </h4>
 
+                <div class="flex items-center">
+                    <form class="mr-4 flex items-center"
+                        action="<?php echo URLROOT; ?>/categories/edit/<?php echo $category->category_id; ?>" method="post">
+                        <input type="hidden" name="id" value="<?php echo $category->category_id; ?>">
+                        <label for="category_name" class="text-sm font-semibold text-gray-300">Edit Category:</label>
+                        <input type="text" id="category_name" name="category_name"
+                            class="p-2 border border-white border-opacity-40 rounded focus:outline-none focus:border-blue-300 bg-opacity-20 text-gray-800"
+                            value="<?php echo $category->category_name; ?>">
+                        <input type="submit" value="Save"
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded-full focus:outline-none focus:shadow-outline-blue ml-2">
+                    </form>
 
-            <div class="mt-3">
-            <form class="d-inline" action="<?php echo URLROOT; ?>/categories/edit/<?php echo $category->category_id; ?>" method="post">
-    <div class="form-group">
-        <input type="hidden" name="id" value="<?php echo $category->category_id; ?>">
-        <label for="category_name">Edit Category:</label>
-        <input type="text" id="category_name" name="category_name" class="form-control" value="<?php echo $category->category_name; ?>">
-    </div>
-    <input type="submit" value="Enregistrer" class="btn btn-success">
-</form>
-
-                <form class="d-inline" action="<?php echo URLROOT; ?>/categories/delete/<?php echo $category->category_id; ?>"
-                    method="post">
-                    <input type="submit" value="Delete" class="btn btn-danger">
-                </form>
+                    <form action="<?php echo URLROOT; ?>/categories/delete/<?php echo $category->category_id; ?>" method="post">
+                        <input type="submit" value="Delete"
+                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-full focus:outline-none focus:shadow-outline-red">
+                    </form>
+                </div>
             </div>
-        </div>
-    <?php endforeach; ?>
+        <?php endforeach; ?>
+    </div>
 <?php endif; ?>
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>

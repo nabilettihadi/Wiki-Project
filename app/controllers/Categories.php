@@ -30,13 +30,13 @@ class Categories extends Controller
     {
         $categories = $this->categoryModel->getCategories();
         $totalCategories = $this->categoryModel->getTotalCategories();
-        $totalTags = $this->tagModel->getTotalTags();
+        $totalTags =  $this->tagModel->getTotalTags();
         $totalWikis = $this->wikiModel->getTotalWikisCount();
         $data = [
             'categories' => $categories,
             'totalCategories' => $totalCategories,
-            'totalTags' => $totalTags,
-            'totalWikis' => $totalWikis,
+            'totalTags'=> $totalTags,
+            'totalWikis'=>$totalWikis,
         ];
 
 
@@ -54,7 +54,7 @@ class Categories extends Controller
         ];
 
 
-        $this->view('category/index', $data);
+         $this->view('category/index', $data);
 
     }
 
@@ -64,7 +64,7 @@ class Categories extends Controller
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
             $data = [
                 'category_name' => trim($_POST['category_name']),
-                'category_id' => $_SESSION['user_id'],
+                'category_id' => $_SESSION['user_id'], 
                 'category_name_err' => ''
             ];
 
@@ -149,4 +149,3 @@ class Categories extends Controller
         }
     }
 }
-

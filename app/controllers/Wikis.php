@@ -37,6 +37,19 @@ class Wikis extends Controller
 
     }
 
+    public function index1(){
+
+        $wikis = $this->wikiModel->getWikis();
+        $data = [
+            'wikis' => $wikis,
+        ];
+
+
+        // $this->view('category/index', $data);
+        $this->view('wikis/admin', $data);
+
+    }
+
     public function index2(){
 
         $wikis = $this->wikiModel->getWikis();
@@ -48,6 +61,22 @@ class Wikis extends Controller
         // $this->view('category/index', $data);
         $this->view('wikis/index', $data);
 
+    }
+
+    public function show($id) {
+        $wiki = $this->wikiModel->getWikiById($id);
+
+        if (!$wiki) {
+            
+            redirect('pages/error');
+        }
+
+        $data = [
+            'wiki' => $wiki,
+          
+        ];
+
+        $this->view('wikis/show', $data);
     }
 
 
@@ -65,9 +94,12 @@ class Wikis extends Controller
             $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : '';
 
             // Assurez-vous que $_POST['tags'] existe et est une chaîne avant d'utiliser explode
-            $tags = isset($_POST['tags']) ? (is_array($_POST['tags']) ? $_POST['tags'] : explode(',', $_POST['tags'])) : [];
+            // $tags = isset($_POST['tags']) ? (is_array($_POST['tags']) ? $_POST['tags'] : explode(',', $_POST['tags'])) : [];
 
+            $tags = isset($_POST['selectedTagsInput']) ? json_decode($_POST['selectedTagsInput'], true) : [];
 
+            // var_dump($tags);
+            // die();
             // Traiter les données du formulaire (ex: enregistrer dans la base de données)...
             $data = [
                 'title' => $title,
@@ -79,7 +111,7 @@ class Wikis extends Controller
 
             if ($this->wikiModel->addWiki($data)) {
                 flash('wiki_message', 'Wiki ajouté avec succès');
-                redirect('wikis');
+                redirect('wikis/index2');
             } else {
                 die('Quelque chose s\'est mal passé');
             }
@@ -157,7 +189,7 @@ class Wikis extends Controller
 
             if ($this->wikiModel->updateWiki($data)) {
                 flash('wiki_message', 'Wiki Updated');
-                redirect('wikis');
+                redirect('wikis/index2');
             } else {
                 die('Something went wrong');
             }
@@ -210,9 +242,42 @@ class Wikis extends Controller
         if ($this->wikiModel->archiveWiki($id)) {
             // Redirect or show success message
             flash('wiki_message', 'Wiki Archived');
-            redirect('wikis/index2');
+            redirect('wikis/index1');
         } else {
             die('Something went wrong');
         }
+    }
+
+
+    public function userWikis()
+{
+   
+    $userWikis = $this->wikiModel->getWikisByUserId($_SESSION['user_id']);
+
+   
+    $data = [
+        'userWikis' => $userWikis,
+    ];
+
+   
+    $this->view('wikis/userWikis', $data);
+}
+
+
+public function search()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+            $searchTerm = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+            // Call a method in your model to perform the search
+            $searchResults = $this->wikiModel->searchWikis($searchTerm);
+
+            // Return the results in JSON format
+            header('Content-Type: application/json');
+            echo json_encode($searchResults);
+
+            exit;
+        }
+
     }
 }
