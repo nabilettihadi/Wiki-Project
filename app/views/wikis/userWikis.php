@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-    <title><?php echo SITENAME; ?></title>
+    <title>
+        <?php echo SITENAME; ?>
+    </title>
 </head>
 
 <body class="font-sans bg-gray-200">
@@ -23,34 +25,26 @@
             </div>
             <nav>
                 <ul class="space-y-4">
-                    <li>
-                        <a href="<?php echo URLROOT; ?>/wikis/index2"
-                            class="flex items-center text-lg py-2 px-4 rounded hover:bg-indigo-700">
-                            <span class="mr-2">🏠</span>
-                            Home
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<?php echo URLROOT; ?>/wikis/userWikis"
-                            class="flex items-center text-lg py-2 px-4 rounded hover:bg-indigo-700">
-                            <span class="mr-2">📚</span>
-                            Mes wikis
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<?php echo URLROOT; ?>/wikis/add"
-                            class="flex items-center text-lg py-2 px-4 rounded hover:bg-indigo-700">
-                            <span class="mr-2">➕</span>
-                            Add wiki
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<?php echo URLROOT; ?>/users/logout"
-                            class="flex items-center text-lg py-2 px-4 rounded hover:bg-indigo-700">
-                            <span class="mr-2">🚪</span>
-                            Logout
-                        </a>
-                    </li>
+                    <?php
+                    $navItems = [
+                        ['url' => URLROOT . '/wikis/index2', 'icon' => '🏠', 'text' => 'Home'],
+                        ['url' => URLROOT . '/wikis/userWikis', 'icon' => '📚', 'text' => 'Mes wikis'],
+                        ['url' => URLROOT . '/wikis/add', 'icon' => '➕', 'text' => 'Add wiki'],
+                        ['url' => URLROOT . '/users/logout', 'icon' => '🚪', 'text' => 'Logout']
+                    ];
+
+                    foreach ($navItems as $item):
+                        ?>
+                        <li>
+                            <a href="<?php echo $item['url']; ?>"
+                                class="flex items-center text-lg py-2 px-4 rounded hover:bg-indigo-700">
+                                <span class="mr-2">
+                                    <?php echo $item['icon']; ?>
+                                </span>
+                                <?php echo $item['text']; ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
                 </ul>
             </nav>
         </aside>
@@ -67,7 +61,9 @@
                             <img class="w-full h-48 object-cover object-center"
                                 src="https://v1.tailwindcss.com/img/card-top.jpg" alt="Wiki Image">
                             <div class="px-6 py-4">
-                                <div class="font-bold text-xl mb-2"><?php echo $wiki->title; ?></div>
+                                <div class="font-bold text-xl mb-2">
+                                    <?php echo $wiki->title; ?>
+                                </div>
                                 <p class="text-gray-700 text-base mb-4">
                                     <?php echo $wiki->content; ?>
                                 </p>
@@ -75,7 +71,8 @@
                                     <div>
                                         <p class="text-gray-700 text-sm">
                                             <?php if (property_exists($wiki, 'category_name')): ?>
-                                                <strong>Catégorie:</strong> <?php echo $wiki->category_name; ?>
+                                                <strong>Catégorie:</strong>
+                                                <?php echo $wiki->category_name; ?>
                                             <?php endif; ?>
                                         </p>
                                         <div class="mt-2">
@@ -115,4 +112,3 @@
 </body>
 
 </html>
-

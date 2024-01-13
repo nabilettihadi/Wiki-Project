@@ -65,9 +65,9 @@ class Category
 
     public function getTotalCategories()
     {
-    $this->db->query('SELECT COUNT(*) as total FROM categories');
-    $row = $this->db->single();
- 
-    return $row->total;
+        $this->db->query('SELECT COUNT(*) as total FROM categories');
+        $row = $this->db->single();
+
+        return $row->total;
     }
 }

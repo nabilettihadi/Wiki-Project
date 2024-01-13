@@ -18,16 +18,17 @@ class Wikis extends Controller
         $this->CategoryModel = $this->model('Category');
     }
 
-    public function index() {
+    public function index()
+    {
         $categories = $this->CategoryModel->getCategories();
         $totalCategories = $this->CategoryModel->getTotalCategories();
-        $totalTags =  $this->tagModel->getTotalTags();
+        $totalTags = $this->tagModel->getTotalTags();
         $totalWikis = $this->wikiModel->getTotalWikisCount();
 
         $data = [
             'categories' => $categories,
             'totalCategories' => $totalCategories,
-            'totalTags'=> $totalTags,
+            'totalTags' => $totalTags,
             'totalWikis' => $totalWikis,
 
         ];
@@ -37,7 +38,8 @@ class Wikis extends Controller
 
     }
 
-    public function index1(){
+    public function index1()
+    {
 
         $wikis = $this->wikiModel->getWikis();
         $data = [
@@ -50,7 +52,8 @@ class Wikis extends Controller
 
     }
 
-    public function index2(){
+    public function index2()
+    {
 
         $wikis = $this->wikiModel->getWikis();
         $data = [
@@ -63,17 +66,18 @@ class Wikis extends Controller
 
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $wiki = $this->wikiModel->getWikiById($id);
 
         if (!$wiki) {
-            
+
             redirect('pages/error');
         }
 
         $data = [
             'wiki' => $wiki,
-          
+
         ];
 
         $this->view('wikis/show', $data);
@@ -84,8 +88,8 @@ class Wikis extends Controller
     public function add()
     {
         // var_dump($_SESSION['user_id']);
-        
-        
+
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Sanitize and validate input
             $title = htmlspecialchars(trim($_POST['title']));
@@ -105,7 +109,7 @@ class Wikis extends Controller
                 'title' => $title,
                 'content' => $content,
                 'category_id' => $category_id,
-                'author_id'=> $user_id,
+                'author_id' => $user_id,
                 'tags' => $tags,
             ];
 
@@ -233,7 +237,7 @@ class Wikis extends Controller
                 'wiki' => $wiki,
             ];
 
-            $this->view('wikis/delete', $data); 
+            $this->view('wikis/delete', $data);
         }
     }
 
@@ -250,21 +254,21 @@ class Wikis extends Controller
 
 
     public function userWikis()
-{
-   
-    $userWikis = $this->wikiModel->getWikisByUserId($_SESSION['user_id']);
+    {
 
-   
-    $data = [
-        'userWikis' => $userWikis,
-    ];
-
-   
-    $this->view('wikis/userWikis', $data);
-}
+        $userWikis = $this->wikiModel->getWikisByUserId($_SESSION['user_id']);
 
 
-public function search()
+        $data = [
+            'userWikis' => $userWikis,
+        ];
+
+
+        $this->view('wikis/userWikis', $data);
+    }
+
+
+    public function search()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $searchTerm = isset($_GET['search']) ? trim($_GET['search']) : '';

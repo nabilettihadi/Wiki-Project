@@ -6,27 +6,42 @@
     <form action="<?php echo URLROOT; ?>/users/register" method="post">
       <div class="mb-4">
         <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Name: <sup>*</sup></label>
-        <input type="text" name="username" class="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-blue-500 bg-gray-100 text-gray-700 rounded-md <?php echo (!empty($data['name_err'])) ? 'border-red-500' : ''; ?>" value="<?php echo $data['username']; ?>">
-        <span class="text-red-500 text-sm"><?php echo $data['name_err']; ?></span>
+        <input type="text" name="username"
+          class="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-blue-500 bg-gray-100 text-gray-700 rounded-md <?php echo (!empty($data['name_err'])) ? 'border-red-500' : ''; ?>"
+          value="<?php echo $data['username']; ?>">
+        <span class="text-red-500 text-sm">
+          <?php echo $data['name_err']; ?>
+        </span>
       </div>
       <div class="mb-4">
         <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email: <sup>*</sup></label>
-        <input type="email" name="email" class="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-blue-500 bg-gray-100 text-gray-700 rounded-md <?php echo (!empty($data['email_err'])) ? 'border-red-500' : ''; ?>" value="<?php echo $data['email']; ?>">
-        <span class="text-red-500 text-sm"><?php echo $data['email_err']; ?></span>
+        <input type="email" name="email"
+          class="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-blue-500 bg-gray-100 text-gray-700 rounded-md <?php echo (!empty($data['email_err'])) ? 'border-red-500' : ''; ?>"
+          value="<?php echo $data['email']; ?>">
+        <span class="text-red-500 text-sm">
+          <?php echo $data['email_err']; ?>
+        </span>
       </div>
       <div class="mb-4">
         <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password: <sup>*</sup></label>
-        <input type="password" name="password" class="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-blue-500 bg-gray-100 text-gray-700 rounded-md <?php echo (!empty($data['password_err'])) ? 'border-red-500' : ''; ?>" value="<?php echo $data['password']; ?>">
-        <span class="text-red-500 text-sm"><?php echo $data['password_err']; ?></span>
+        <input type="password" name="password"
+          class="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-blue-500 bg-gray-100 text-gray-700 rounded-md <?php echo (!empty($data['password_err'])) ? 'border-red-500' : ''; ?>"
+          value="<?php echo $data['password']; ?>">
+        <span class="text-red-500 text-sm">
+          <?php echo $data['password_err']; ?>
+        </span>
       </div>
 
       <div class="flex items-center justify-center">
-        <button type="submit" class="bg-blue-500 text-white py-2 px-6 rounded focus:outline-none focus:shadow-outline-blue hover:bg-blue-600 focus:bg-blue-600 transition-transform transform hover:scale-105">
+        <button type="submit"
+          class="bg-blue-500 text-white py-2 px-6 rounded focus:outline-none focus:shadow-outline-blue hover:bg-blue-600 focus:bg-blue-600 transition-transform transform hover:scale-105">
           Register
         </button>
       </div>
       <div class="mt-4 text-center">
-        <a href="<?php echo URLROOT; ?>/users/login" class="text-blue-500 hover:text-blue-700 transition-transform transform hover:scale-105">Have an account? Login</a>
+        <a href="<?php echo URLROOT; ?>/users/login"
+          class="text-blue-500 hover:text-blue-700 transition-transform transform hover:scale-105">Have an account?
+          Login</a>
       </div>
     </form>
   </div>
@@ -35,14 +50,14 @@
 
 
 
-  <script>
+<script>
   document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector("form");
 
     form.addEventListener("submit", function (event) {
       let isValid = true;
 
-      
+
       const nameRegex = /^[A-Za-z\s]+$/;
 
       const usernameInput = document.querySelector('input[name="username"]');
@@ -51,7 +66,7 @@
         isValid = false;
       }
 
-      
+
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
       const emailInput = document.querySelector('input[name="email"]');
@@ -60,7 +75,7 @@
         isValid = false;
       }
 
-     
+
       const passwordRegex = /^.{6,}$/;
 
       const passwordInput = document.querySelector('input[name="password"]');
@@ -70,7 +85,7 @@
       }
 
       if (!isValid) {
-        event.preventDefault(); 
+        event.preventDefault();
       }
     });
 

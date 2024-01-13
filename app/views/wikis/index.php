@@ -19,38 +19,35 @@
     <section class="flex">
 
         <!-- Sidebar Section -->
-        <aside class="w-1/5 bg-indigo-800 text-white p-8 fixed top-0 h-screen">
+        <!-- Sidebar Section -->
+        <aside class="w-1/5 bg-indigo-800 text-white p-8 fixed top-0 h-full">
             <div class="flex justify-between items-center mb-8">
-                <h2 class="text-4xl font-extrabold text-gray-800">
+                <h2 class="text-4xl font-extrabold">
                     <?php echo $_SESSION['user_name']; ?>
                 </h2>
             </div>
             <nav>
                 <ul class="space-y-4">
-                    <li>
-                        <a href="<?php echo URLROOT; ?>/wikis/index2"
-                            class="flex items-center text-lg py-2 px-4 rounded hover:bg-indigo-700">
-                            <span class="mr-2">🏠</span> Home
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<?php echo URLROOT; ?>/wikis/userWikis"
-                            class="flex items-center text-lg py-2 px-4 rounded hover:bg-indigo-700">
-                            <span class="mr-2">📚</span> Mes wikis
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<?php echo URLROOT; ?>/wikis/add"
-                            class="flex items-center text-lg py-2 px-4 rounded hover:bg-indigo-700">
-                            <span class="mr-2">➕</span> Add wiki
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<?php echo URLROOT; ?>/users/logout"
-                            class="flex items-center text-lg py-2 px-4 rounded hover:bg-indigo-700">
-                            <span class="mr-2">🚪</span> Logout
-                        </a>
-                    </li>
+                    <?php
+                    $navItems = [
+                        ['url' => URLROOT . '/wikis/index2', 'icon' => '🏠', 'text' => 'Home'],
+                        ['url' => URLROOT . '/wikis/userWikis', 'icon' => '📚', 'text' => 'Mes wikis'],
+                        ['url' => URLROOT . '/wikis/add', 'icon' => '➕', 'text' => 'Add wiki'],
+                        ['url' => URLROOT . '/users/logout', 'icon' => '🚪', 'text' => 'Logout']
+                    ];
+
+                    foreach ($navItems as $item):
+                        ?>
+                        <li>
+                            <a href="<?php echo $item['url']; ?>"
+                                class="flex items-center text-lg py-2 px-4 rounded hover:bg-indigo-700">
+                                <span class="mr-2">
+                                    <?php echo $item['icon']; ?>
+                                </span>
+                                <?php echo $item['text']; ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
                 </ul>
             </nav>
         </aside>
@@ -62,30 +59,16 @@
                     placeholder="Rechercher par titre, tags, catégorie ou contenu..." />
             </div>
 
-            <div id="searchResultsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div id="searchResultsContainer"
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 <?php if (!empty($data['wikis'])): ?>
                     <?php foreach ($data['wikis'] as $wiki): ?>
                         <div class="max-w-sm rounded overflow-hidden shadow-lg">
-                            <img class="w-full" src="https://v1.tailwindcss.com/img/card-top.jpg"
-                                alt="Sunset in the mountains">
+                            <img class="w-full" src="https://v1.tailwindcss.com/img/card-top.jpg" alt="Sunset in the mountains">
                             <div class="px-6 py-4">
                                 <div class="flex justify-between items-center mb-2">
                                     <div class="font-bold text-xl">
                                         <?php echo $wiki->title; ?>
-                                    </div>
-                                    <div class="flex">
-                                        <?php if ($wiki->author_id == $_SESSION['user_id']): ?>
-                                            <a href="<?php echo URLROOT; ?>/wikis/edit/<?php echo $wiki->wiki_id; ?>"
-                                                class="text-blue-500 hover:text-blue-700 mr-2">
-                                                <i class="fas fa-edit"></i> Modifier
-                                            </a>
-                                            <form class="d-inline"
-                                                action="<?php echo URLROOT; ?>/wikis/delete/<?php echo $wiki->wiki_id; ?>"
-                                                method="post"
-                                                onsubmit="return confirm('Are you sure you want to delete this wiki?');">
-                                                <button type="submit" class="mt-2 text-red-600">Supprimer</button>
-                                            </form>
-                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <p class="text-gray-700 text-base break-words">
@@ -103,12 +86,25 @@
                                     <?php echo implode(', ', (array) $wiki->tags); ?>
                                 </span>
                             </div>
-                            <div class="px-6 pt-4 pb-2">
+                            <div class="flex justify-between items-center px-6 pt-4 pb-2">
                                 <a href="<?php echo URLROOT; ?>/wikis/show/<?php echo $wiki->wiki_id; ?>"
-                                    class="inline-block bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700">
+                                    class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">
                                     Read More
                                 </a>
+                                <?php if ($wiki->author_id == $_SESSION['user_id']): ?>
+                                    <a href="<?php echo URLROOT; ?>/wikis/edit/<?php echo $wiki->wiki_id; ?>"
+                                        class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700 ml-2 transition">
+                                        <i class="fas fa-edit"></i> Modifier
+                                    </a>
+                                    <form class="d-inline"
+                                        action="<?php echo URLROOT; ?>/wikis/delete/<?php echo $wiki->wiki_id; ?>" method="post"
+                                        onsubmit="return confirm('Are you sure you want to delete this wiki?');">
+                                        <button type="submit"
+                                            class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-700 ml-2 transition">Supprimer</button>
+                                    </form>
+                                <?php endif; ?>
                             </div>
+
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>
@@ -116,28 +112,53 @@
                 <?php endif; ?>
             </div>
         </div>
-    </section>
 
-    <!-- Display search results here -->
-    <div id="searchResults"></div>
+
+        <!-- Display search results here -->
+        <div id="searchResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+
+    </section>
 
     <!-- Ajoutez cette balise de script avant la fermeture du corps body -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('searchInput');
             const searchResultsContainer = document.getElementById('searchResultsContainer');
+            const searchResults = document.getElementById('searchResults');
 
             searchInput.addEventListener('input', function () {
                 const searchTerm = searchInput.value.trim();
 
                 // Check if the search term is empty
                 if (searchTerm === '') {
-                    // Clear the search results container
-                    searchResultsContainer.innerHTML = '';
+                    // Perform AJAX request to retrieve all wikis
+                    const xhrAllWikis = new XMLHttpRequest();
+
+                    xhrAllWikis.open('GET', `<?php echo URLROOT; ?>/Wikis/allWikis`, true);
+
+                    xhrAllWikis.onload = function () {
+                        if (xhrAllWikis.status >= 200 && xhrAllWikis.status < 400) {
+                            // Success! Handle the response and update the content
+                            const response = JSON.parse(xhrAllWikis.responseText);
+                            // Update the content based on the response
+                            updateSearchResults(response);
+                        } else {
+                            // Error handling
+                            console.error('Request failed');
+                        }
+                    };
+
+                    xhrAllWikis.onerror = function () {
+                        // Network error
+                        console.error('Network error');
+                    };
+
+                    xhrAllWikis.send();
+
                     return;
                 }
 
-                // Perform AJAX request
+                // Perform AJAX request for the search term
                 const xhr = new XMLHttpRequest();
 
                 xhr.open('GET', `<?php echo URLROOT; ?>/Wikis/search?search=${searchTerm}`, true);
@@ -163,25 +184,44 @@
             });
 
             function updateSearchResults(results) {
-                // Clear previous results
+                // Clear the existing wiki cards
                 searchResultsContainer.innerHTML = '';
 
                 if (results.length > 0) {
                     // Display the search results
                     results.forEach(result => {
                         const resultElement = document.createElement('div');
-                        resultElement.classList.add('search-result');
+                        resultElement.classList.add('max-w-sm', 'rounded', 'overflow-hidden', 'shadow-lg');
 
-                        // Display result data (customize based on your data structure)
                         resultElement.innerHTML = `
-                    <h2>${result.title}</h2>
-                    <p>${result.content}</p>
-                    <p>Category: ${result.category_name}</p>
-                    <p>Tags: ${result.tags || 'None'}</p>
-                    <!-- Add more data as needed -->
+                        <img class="w-full" src="https://v1.tailwindcss.com/img/card-top.jpg" alt="Sunset in the mountains">
+                        <div class="px-6 py-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="font-bold text-xl">${result.title}</div>
+                            </div>
+                            <p class="text-gray-700 text-base break-words">${result.content}</p>
+                            <p class="card-text"><strong>Catégorie:</strong>${result.category_name}</p>
+                        </div>
+                        <div class="px-3 pt-4 pb-2">
+                            <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                                #${result.tags || 'None'}
+                            </span>
+                        </div>
+                        <div class="px-6 pt-4 pb-2">
+    <a href="<?php echo URLROOT; ?>/wikis/show/${result.wiki_id}" class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">
+        Read More
+    </a>
+    <!-- Edit button with data-wiki-id attribute -->
+    <a href="<?php echo URLROOT; ?>/wikis/edit/${result.wiki_id}" class="edit-wiki bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700 ml-2 transition" data-wiki-id="${result.wiki_id}">
+        <i class="fas fa-edit"></i> Modifier
+    </a>
+    <!-- Delete form with data-wiki-id attribute -->
+    <form id="deleteForm${result.wiki_id}" class="d-inline" action="<?php echo URLROOT; ?>/wikis/delete/${result.wiki_id}" method="post">
+        <button type="submit" class="mt-2 bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-700 transition delete-wiki" data-wiki-id="${result.wiki_id}">Supprimer</button>
+    </form>
+</div>
 
-                    <hr>
-                `;
+                    `;
 
                         searchResultsContainer.appendChild(resultElement);
                     });
@@ -195,8 +235,8 @@
         });
     </script>
 
+
     <?php require APPROOT . '/views/inc/footer.php'; ?>
 </body>
 
 </html>
-

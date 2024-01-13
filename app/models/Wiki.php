@@ -2,7 +2,7 @@
 class Wiki
 {
     private $db;
-    public $author_name; 
+    public $author_name;
 
     public function __construct()
     {
@@ -49,7 +49,8 @@ class Wiki
 
     // ...
 
-    public function addWiki($data) {
+    public function addWiki($data)
+    {
         // Insertion dans la table des wikis
         $this->db->query('INSERT INTO wikis (title, content, category_id, author_id) VALUES (:title, :content, :category_id, :author_id)');
         // Liaison des valeurs
@@ -57,49 +58,49 @@ class Wiki
         $this->db->bind(':content', $data['content']);
         $this->db->bind(':category_id', $data['category_id']);
         $this->db->bind(':author_id', $_SESSION['user_id']);
-        
+
         // Exécution de la requête
         if ($this->db->execute()) {
             $wiki_id = $this->db->lastInsertId();
-    
+
             // Ajout des tags associés au wiki dans la table de liaison (wiki_tags)
             foreach ($data['tags'] as $tag_id) {
                 // // Vérifier si le tag existe déjà
                 // $this->db->query('SELECT tag_id FROM tags WHERE tag_name = :tag_name');
                 // $this->db->bind(':tag_name', $tag_name);
                 // $existingTag = $this->db->single();
-    
+
                 // if (!$existingTag) {
                 //     // Le tag n'existe pas, l'ajouter à la table tags
                 //     $this->db->query('INSERT INTO tags (tag_name) VALUES (:tag_name)');
                 //     $this->db->bind(':tag_name', $tag_name);
                 //     $this->db->execute();
-    
+
                 //     // Récupérer le nouvel tag_id
                 //     $tag_id = $this->db->lastInsertId();
                 // } else {
                 //     // Le tag existe déjà, utiliser son tag_id
                 //     $tag_id = $existingTag->tag_id;
                 // }
-    
+
                 // // Ajouter l'entrée correspondante dans la table wikitags
                 $this->db->query('INSERT INTO wikitags (wiki_id, tag_id) VALUES (:wiki_id, :tag_id)');
                 $this->db->bind(':wiki_id', $wiki_id);
                 $this->db->bind(':tag_id', $tag_id);
                 $this->db->execute();
             }
-    
+
             return true;
         } else {
             return false;
         }
     }
 
-// ...
+    // ...
 
 
-    
-    
+
+
 
 
     public function updateWiki($data)
@@ -141,19 +142,19 @@ class Wiki
                          LEFT JOIN tags ON wikis.category_id = tags.category_id
                          WHERE wikis.wiki_id = :id
                          GROUP BY wikis.wiki_id");
-    
+
         $this->db->bind(':id', $id);
         $row = $this->db->single();
-    
+
         if (property_exists($row, 'tag_ids')) {
             $row->tags = explode(',', $row->tag_ids);
         } else {
             $row->tags = [];
         }
-    
+
         return $row;
     }
-    
+
 
     public function getCategories()
     {
@@ -221,11 +222,11 @@ class Wiki
         return $this->db->single()->total;
     }
 
-    
+
     public function getWikisByUserId($userId)
     {
-    
-    
+
+
         $this->db->query("SELECT wikis.*, categories.category_name, GROUP_CONCAT(tags.tag_name) AS tags
         FROM wikis
         LEFT JOIN categories ON wikis.category_id = categories.category_id
@@ -234,14 +235,14 @@ class Wiki
         WHERE archived = 0 AND author_id = :user_id
         GROUP BY wikis.wiki_id 
         ORDER BY wikis.created_at DESC");
-    
-    $this->db->bind(':user_id', $userId);
-    
-    
+
+        $this->db->bind(':user_id', $userId);
+
+
         return $this->db->resultSet();
     }
 
-public function searchWikis($searchTerm)
+    public function searchWikis($searchTerm)
     {
         $query = "SELECT wikis.*, categories.category_name, GROUP_CONCAT(tags.tag_name) AS tags
                   FROM wikis
