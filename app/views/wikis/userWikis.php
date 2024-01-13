@@ -16,14 +16,38 @@
     <!-- Admin Dashboard Section -->
     <section class="flex h-screen">
 
-        <!-- Sidebar Section -->
-        <aside class="w-1/5 bg-indigo-800 text-white p-8 fixed top-0 h-full">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-4xl font-extrabold">
+        <!-- Navbar for Small Screens -->
+        <nav class="md:hidden w-full bg-indigo-800 text-white p-4 fixed top-0 z-50">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-extrabold">
                     <?php echo $_SESSION['user_name']; ?>
                 </h2>
+                <button id="toggleSidebar" class="focus:outline-none">
+                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
             </div>
-            <nav>
+        </nav>
+
+        <!-- Sidebar Section -->
+        <aside
+            class="w-1/5 bg-indigo-800 text-white p-8 fixed top-0 h-full transition-all duration-300 transform -translate-x-full md:translate-x-0 md:relative md:static">
+            <div class="hidden md:flex justify-between items-center mb-4 md:mb-8">
+                <h2 class="text-2xl md:text-4xl font-extrabold">
+                    <?php echo $_SESSION['user_name']; ?>
+                </h2>
+                <button id="toggleSidebar" class="md:hidden focus:outline-none">
+                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+            <nav class="hidden md:block">
                 <ul class="space-y-4">
                     <?php
                     $navItems = [
@@ -37,7 +61,7 @@
                         ?>
                         <li>
                             <a href="<?php echo $item['url']; ?>"
-                                class="flex items-center text-lg py-2 px-4 rounded hover:bg-indigo-700">
+                                class="flex items-center text-base md:text-lg py-2 px-4 rounded hover:bg-indigo-700">
                                 <span class="mr-2">
                                     <?php echo $item['icon']; ?>
                                 </span>
@@ -50,12 +74,12 @@
         </aside>
 
         <!-- Main Content Section -->
-        <div class="w-3/4 p-8 ml-auto">
+        <div class="w-3/4 p-4 md:p-8 ml-auto">
 
             <!-- Dashboard Section -->
             <section class="container mx-auto my-8">
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
                     <?php foreach ($data['userWikis'] as $wiki): ?>
                         <div class="max-w-md mx-auto bg-white rounded-lg overflow-hidden shadow-lg">
                             <img class="w-full h-48 object-cover object-center"
@@ -108,6 +132,12 @@
 
         </div>
     </section>
+
+    <script>
+        document.getElementById('toggleSidebar').addEventListener('click', function () {
+            document.querySelector('aside').classList.toggle('-translate-x-full');
+        });
+    </script>
 
 </body>
 

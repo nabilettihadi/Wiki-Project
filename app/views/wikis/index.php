@@ -208,17 +208,19 @@
                             </span>
                         </div>
                         <div class="px-6 pt-4 pb-2">
-    <a href="<?php echo URLROOT; ?>/wikis/show/${result.wiki_id}" class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">
-        Read More
-    </a>
-    <!-- Edit button with data-wiki-id attribute -->
-    <a href="<?php echo URLROOT; ?>/wikis/edit/${result.wiki_id}" class="edit-wiki bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700 ml-2 transition" data-wiki-id="${result.wiki_id}">
-        <i class="fas fa-edit"></i> Modifier
-    </a>
-    <!-- Delete form with data-wiki-id attribute -->
-    <form id="deleteForm${result.wiki_id}" class="d-inline" action="<?php echo URLROOT; ?>/wikis/delete/${result.wiki_id}" method="post">
-        <button type="submit" class="mt-2 bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-700 transition delete-wiki" data-wiki-id="${result.wiki_id}">Supprimer</button>
-    </form>
+                        <div class="flex justify-between items-center px-6 pt-4 pb-2">
+                            <a href="<?php echo URLROOT; ?>/wikis/show/${result.wiki_id}" class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">
+                                Read More
+                            </a>
+                            ${result.author_id == <?php echo $_SESSION['user_id']; ?> ? `
+                                <a href="<?php echo URLROOT; ?>/wikis/edit/${result.wiki_id}" class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700 ml-2 transition">
+                                    <i class="fas fa-edit"></i> Modifier
+                                </a>
+                                <form id="deleteForm${result.wiki_id}" class="d-inline" action="<?php echo URLROOT; ?>/wikis/delete/${result.wiki_id}" method="post">
+                                    <button type="submit" class="mt-2 bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-700 transition delete-wiki">Supprimer</button>
+                                </form>
+                            ` : ''}
+                        </div>
 </div>
 
                     `;
@@ -240,3 +242,4 @@
 </body>
 
 </html>
+

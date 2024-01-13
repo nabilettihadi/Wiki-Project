@@ -18,7 +18,7 @@
 </head>
 
 <body>
-
+    
     <body class="font-sans bg-gray-200">
 
         <!-- Admin Dashboard Section -->

@@ -1,4 +1,20 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+
+    <title>
+        <?php echo SITENAME; ?>
+    </title>
+</head>
+<body class="font-sans bg-gray-200">
+<a href="<?php echo URLROOT; ?>/wikis/index2" class="bg-red-500 text-white px-4 py-2 mt-10 inline-flex items-center"><i
+        class="fa fa-backward mr-2"></i> Back</a>
 
 <div class="flex items-center justify-center my-8">
     <h1 class="text-4xl font-extrabold text-blue-500">Create a New Wiki</h1>
