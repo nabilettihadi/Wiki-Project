@@ -45,14 +45,15 @@
         </select>
     </div>
     <div class="mb-3">
-        <label for="selectedTagsInput" class="form-label">Tags</label>
-        <input type="hidden" id="selectedTagsInput" name="selectedTagsInput" class="form-control">
+    <label for="selectedTagsInput" class="block text-sm font-semibold text-gray-200 mb-2">Tags</label>
+    <div id="tagsContainer" class="flex flex-wrap mb-2"></div>
+</div>
 
-        <div id="tagsContainer" class=" "></div>
-    </div>
-    <div class="pt-1 mb-3 d-flex mt-2 justify-content-end">
-        <button class="btn btn-md btn-block bg-blue-700 text-white" type="submit" name="submit">Valider</button>
-    </div>
+<div class="flex justify-end">
+    <button class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-full" type="submit" name="submit">
+        Valider
+    </button>
+</div>
 </form>
 
 <script>

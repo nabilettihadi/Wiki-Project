@@ -13,22 +13,9 @@ class Tags extends Controller
         }
 
         $this->tagModel = $this->model('Tag');
-        $this->categoryModel = $this->model('Category'); // Assurez-vous que 'Category' est correctement orthographié
+        $this->categoryModel = $this->model('Category');
         $this->wikiModel = $this->model('Wiki');
     }
-
-    // public function index()
-    // {
-    //     $categories = $this->categoryModel->getCategories();
-    //     $tags = $this->tagModel->getTags();
-
-    //     $data = [
-    //         'tags' => $tags,
-    //         'categories' => $categories
-    //     ];
-
-    //     $this->view('tags/index', $data);
-    // }
 
     public function index()
     {
@@ -43,32 +30,25 @@ class Tags extends Controller
             'totalWikis' => $totalWikis,
         ];
 
-
-        // $this->view('category/index', $data);
         $this->view('dashboard/dashboard', $data);
     }
-
-
 
     public function index2()
     {
 
         $tags = $this->tagModel->getTags();
         $totalTags = $this->tagModel->getTotalTags();
-        // $totalCategories = $this->categoryModel->getTotalCategories();
 
-        // var_dump($tags);
 
         $data = [
             'tags' => $tags,
             'totalTags' => $totalTags,
-            // 'totalCategories' => $totalCategories,
+
         ];
 
         $this->view('tags/index', $data);
-        // $this->categoryModel = $this->model('Category');
-    }
 
+    }
 
     public function add()
     {
@@ -111,7 +91,6 @@ class Tags extends Controller
 
             $this->view('tags/add', $data);
         }
-        // redirect('tags/index2');
     }
 
     public function delete($id)
@@ -192,7 +171,5 @@ class Tags extends Controller
             redirect('tags');
         }
     }
-
-
 
 }

@@ -17,15 +17,6 @@ class Categories extends Controller
         $this->wikiModel = $this->model('Wiki');
     }
 
-    // public function index()
-    // {
-    //     $categories = $this->categoryModel->getCategories();
-    //     $data = [
-    //         'categories' => $categories
-    //     ];
-    //     $this->view('category/index', $data);
-    // }
-
     public function index()
     {
         $categories = $this->categoryModel->getCategories();
@@ -39,8 +30,6 @@ class Categories extends Controller
             'totalWikis' => $totalWikis,
         ];
 
-
-        // $this->view('category/index', $data);
         $this->view('dashboard/dashboard', $data);
     }
 
@@ -52,7 +41,6 @@ class Categories extends Controller
             'categories' => $categories,
             'totalCategories' => $totalCategories,
         ];
-
 
         $this->view('category/index', $data);
 
