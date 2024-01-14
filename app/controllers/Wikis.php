@@ -18,17 +18,18 @@ class Wikis extends Controller
         $this->CategoryModel = $this->model('Category');
     }
 
-    public function index() {
+    public function index()
+    {
         $categories = $this->CategoryModel->getCategories();
         $totalCategories = $this->CategoryModel->getTotalCategories();
-        $totalTags =  $this->tagModel->getTotalTags();
+        $totalTags = $this->tagModel->getTotalTags();
         $totalWikis = $this->wikiModel->getTotalWikisCount();
         $lastWikiAuthor = $this->wikiModel->getLastWikiAuthor();
 
         $data = [
             'categories' => $categories,
             'totalCategories' => $totalCategories,
-            'totalTags'=> $totalTags,
+            'totalTags' => $totalTags,
             'totalWikis' => $totalWikis,
             'lastWikiAuthor' => $lastWikiAuthor,
 
@@ -39,46 +40,45 @@ class Wikis extends Controller
 
     }
 
-    public function index1(){
+    public function index1()
+    {
 
         $wikis = $this->wikiModel->getWikis();
-       
+
         $data = [
             'wikis' => $wikis,
-            
+
         ];
 
-
-        // $this->view('category/index', $data);
         $this->view('wikis/admin', $data);
-        
+
 
     }
 
-    public function index2(){
+    public function index2()
+    {
 
         $wikis = $this->wikiModel->getWikis();
         $data = [
             'wikis' => $wikis,
         ];
 
-
-        // $this->view('category/index', $data);
         $this->view('wikis/index', $data);
 
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $wiki = $this->wikiModel->getWikiById($id);
 
         if (!$wiki) {
-            
+
             redirect('pages/error');
         }
 
         $data = [
             'wiki' => $wiki,
-          
+
         ];
 
         $this->view('wikis/show', $data);
@@ -93,34 +93,34 @@ class Wikis extends Controller
             $content = htmlspecialchars(trim($_POST['content']));
             $category_id = $_POST['category_id'];
             $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : '';
-            
+
             // Initialize error messages
             $title_err = '';
             $content_err = '';
             $category_err = '';
             $tags_err = '';
-    
+
             // Validate title
             if (empty($title)) {
                 $title_err = 'Le titre est requis';
             }
-    
+
             // Validate content
             if (empty($content)) {
                 $content_err = 'Le contenu est requis';
             }
-    
+
             // Validate category_id (you may want to perform further validation if needed)
             if (empty($category_id)) {
                 $category_err = 'La catégorie est requise';
             }
-    
+
             // Validate tags
             $tags = isset($_POST['selectedTagsInput']) ? json_decode($_POST['selectedTagsInput'], true) : [];
             if (empty($tags)) {
                 $tags_err = 'Au moins un tag est requis';
             }
-    
+
             // Check if any error messages are set
             if (empty($title_err) && empty($content_err) && empty($category_err) && empty($tags_err)) {
                 // Process form data if validation passes
@@ -131,7 +131,7 @@ class Wikis extends Controller
                     'author_id' => $user_id,
                     'tags' => $tags,
                 ];
-    
+
                 // Check if both title and content are non-empty
                 if (!empty($data['title']) && !empty($data['content'])) {
                     if ($this->wikiModel->addWiki($data)) {
@@ -154,33 +154,33 @@ class Wikis extends Controller
                 redirect('wikis/add');
             }
         }
-    
+
         // Load the view with the necessary data (including the list of tags and error messages)
         $wikis = $this->wikiModel->getWikis();
-    
+
         // Initialize CategoryModel before using it
         $this->CategoryModel = $this->model('Category');
         $categories = $this->CategoryModel->getCategories();
-    
-        $this->tagModel = $this->model('Tag'); // Make sure the model name is correct
-    
+
+        $this->tagModel = $this->model('Tag');
+
         $categoryTags = [];
         foreach ($categories as $category) {
             $tags = $this->tagModel->getTagsByCategory($category->category_id);
             $categoryTags[$category->category_id] = $tags;
         }
-    
+
         $data = [
             'categories' => $categories,
-            'tagsList' => $this->wikiModel->getTags(), // Assuming you want to get tags from wikiModel
+            'tagsList' => $this->wikiModel->getTags(),
             'categoryTags' => $categoryTags,
             'wikis' => $wikis,
         ];
-    
+
         $this->view('wikis/add', $data);
     }
-    
-    
+
+
 
 
     public function statistics()
@@ -271,7 +271,7 @@ class Wikis extends Controller
                 'wiki' => $wiki,
             ];
 
-            $this->view('wikis/delete', $data); 
+            $this->view('wikis/delete', $data);
         }
     }
 
@@ -288,21 +288,21 @@ class Wikis extends Controller
 
 
     public function userWikis()
-{
-   
-    $userWikis = $this->wikiModel->getWikisByUserId($_SESSION['user_id']);
+    {
 
-   
-    $data = [
-        'userWikis' => $userWikis,
-    ];
-
-   
-    $this->view('wikis/userWikis', $data);
-}
+        $userWikis = $this->wikiModel->getWikisByUserId($_SESSION['user_id']);
 
 
-public function search()
+        $data = [
+            'userWikis' => $userWikis,
+        ];
+
+
+        $this->view('wikis/userWikis', $data);
+    }
+
+
+    public function search()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $searchTerm = isset($_GET['search']) ? trim($_GET['search']) : '';

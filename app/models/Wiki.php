@@ -2,7 +2,7 @@
 class Wiki
 {
     private $db;
-    public $author_name; 
+    public $author_name;
 
     public function __construct()
     {
@@ -21,34 +21,6 @@ class Wiki
         return $this->db->resultSet();
     }
 
-    // public function addWiki($data) {
-    //     // Insertion dans la table des wikis
-    //     $this->db->query('INSERT INTO wikis (title, content, category_id) VALUES (:title, :content, :category_id)');
-    //     // Liaison des valeurs
-    //     $this->db->bind(':title', $data['title']);
-    //     $this->db->bind(':content', $data['content']);
-    //     $this->db->bind(':category_id', $data['category_id']);
-    //     // Exécution de la requête
-    //     if ($this->db->execute()) {
-    //         $wiki_id = $this->db->lastInsertId();
-
-    //         // Ajout des tags associés au wiki dans la table de liaison (wiki_tags)
-    //         // var_dump($data);
-    //         foreach ($data['tags'] as $tag_id) {
-    //             $this->db->query('INSERT INTO wikitags (wiki_id, tag_id) VALUES (:wiki_id, :tag_id)');
-    //             $this->db->bind(':wiki_id', $wiki_id);
-    //             $this->db->bind(':tag_id', $tag_id);
-    //             $this->db->execute();
-    //         }
-
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
-    // ...
-
     public function addWiki($data)
     {
         $this->db->query('INSERT INTO wikis (title, content, category_id, author_id) VALUES (:title, :content, :category_id, :author_id)');
@@ -57,32 +29,25 @@ class Wiki
         $this->db->bind(':content', $data['content']);
         $this->db->bind(':category_id', $data['category_id']);
         $this->db->bind(':author_id', $data['author_id']);
-    
+
         // Execute
         if ($this->db->execute()) {
             $wikiId = $this->db->lastInsertId();
-    
+
             // Insert tags
             foreach ($data['tags'] as $tagId) {
                 $this->db->query('INSERT INTO wikitags (wiki_id, tag_id) VALUES (:wiki_id, :tag_id)');
                 $this->db->bind(':wiki_id', $wikiId);
                 $this->db->bind(':tag_id', $tagId);
-    
+
                 $this->db->execute();
             }
-    
+
             return true;
         } else {
             return false;
         }
     }
-    
-
-
-    
-    
-
-
     public function updateWiki($data)
     {
         // Update the main wiki information
@@ -112,7 +77,6 @@ class Wiki
         }
     }
 
-
     public function getWikiById($id)
     {
         $this->db->query('SELECT Wikis.*, Users.username as author_name, Categories.category_name, GROUP_CONCAT(Tags.tag_name) AS tag_ids
@@ -125,7 +89,7 @@ class Wiki
         GROUP BY Wikis.wiki_id
         ORDER BY Wikis.updated_at DESC;');
 
-    $this->db->bind(':wiki_id', $id);
+        $this->db->bind(':wiki_id', $id);
 
         $row = $this->db->single();
 
@@ -139,8 +103,6 @@ class Wiki
         return $row;
     }
 
-    
-
     public function getCategories()
     {
         $this->db->query('SELECT * FROM categories');
@@ -153,14 +115,6 @@ class Wiki
         return $this->db->resultSet();
     }
 
-    // public function getTotalWikisCount()
-    // {
-    //     $this->db->query('SELECT COUNT(*) AS totalWikis FROM wikis');
-    //     $row = $this->db->single();
-    //     return $row->totalWikis;
-    // }
-
-    // models/Wiki.php
     public function getTagsByCategory($categoryId)
     {
         $this->db->query('SELECT * FROM tags WHERE category_id = :category_id');
@@ -207,11 +161,11 @@ class Wiki
         return $this->db->single()->total;
     }
 
-    
+
     public function getWikisByUserId($userId)
     {
-    
-    
+
+
         $this->db->query("SELECT wikis.*, categories.category_name, GROUP_CONCAT(tags.tag_name) AS tags
         FROM wikis
         LEFT JOIN categories ON wikis.category_id = categories.category_id
@@ -220,14 +174,14 @@ class Wiki
         WHERE archived = 0 AND author_id = :user_id
         GROUP BY wikis.wiki_id 
         ORDER BY wikis.created_at DESC");
-    
-    $this->db->bind(':user_id', $userId);
-    
-    
+
+        $this->db->bind(':user_id', $userId);
+
+
         return $this->db->resultSet();
     }
 
-public function searchWikis($searchTerm)
+    public function searchWikis($searchTerm)
     {
         $query = "SELECT wikis.*, categories.category_name, GROUP_CONCAT(tags.tag_name) AS tags
                   FROM wikis
@@ -246,19 +200,16 @@ public function searchWikis($searchTerm)
         return $this->db->resultSet();
     }
 
-    // In your Wiki model (Wiki.php)
-public function getLastWikiAuthor()
-{
-    $this->db->query('SELECT users.username FROM wikis
+    public function getLastWikiAuthor()
+    {
+        $this->db->query('SELECT users.username FROM wikis
                       JOIN users ON wikis.author_id = users.user_id
                       ORDER BY wikis.created_at DESC
                       LIMIT 1');
 
-    $row = $this->db->single();
+        $row = $this->db->single();
 
-    return $row->username;
-}
-
-
+        return $row->username;
+    }
 
 }

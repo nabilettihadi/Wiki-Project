@@ -58,7 +58,6 @@ class Tag
             $this->db->query('UPDATE tags SET tag_name = :tag_name WHERE tag_id = :id');
             $this->db->bind(':id', $data['id']);
             $this->db->bind(':tag_name', $data['tag_name']);
-            // $this->db->bind(':category_id', $data['category_id']);
     
             if ($this->db->execute()) {
                 return true;
@@ -125,7 +124,5 @@ public function getTotalTags()
 
     return ($row) ? true : false;
 }
-
-
 
 }
