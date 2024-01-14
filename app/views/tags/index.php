@@ -78,6 +78,7 @@
 <section class="container mx-auto lg:ml-5 my-8 max-w-md:mx-auto">
 
 <?php flash('tag_message'); ?>
+
 <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-semibold">Tags</h1>
     <a href="<?php echo URLROOT; ?>/tags/add"
@@ -90,35 +91,34 @@
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
     <?php foreach ($data['tags'] as $tag): ?>
-        <div class="bg-white rounded-lg overflow-hidden shadow-lg">
-            <img class="w-full h-48 object-cover object-center"
-                src="https://cdn.shopify.com/app-store/listing_images/fe222c0ac4c5bc493a66b0f2f401cdb2/icon/CJvW-v_htPsCEAE=.png"
-                alt="Bonnie image" />
+        <div class="bg-gradient-to-r from-blue-500 to-blue-800 text-white rounded-lg overflow-hidden shadow-lg p-4">
+
             <div class="p-6">
-                <h5 class="text-xl font-medium text-gray-900 mb-2">
+                <h5 class="text-xl font-medium text-white mb-2">
                     <?php echo $tag->tagName; ?>
                 </h5>
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-white">
                     <?php echo $tag->categoryName; ?>
                 </p>
             </div>
             <div class="p-4">
-                <form class="flex items-center mb-2"
-                    action="<?php echo URLROOT; ?>/tags/edit/<?php echo $tag->tagId; ?>" method="post">
-                    <input type="text" name="tag_name"
-                        class="form-input border border-gray-300 rounded-md p-2 mr-2 focus:outline-none focus:border-blue-500"
-                        value="<?php echo $tag->tagName; ?>">
-                    <button type="submit"
-                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                        Enregistrer
-                    </button>
-                    <!-- Display error message if it exists -->
-                    <?php if (isset($data['title_err']) && !empty($data['title_err'])): ?>
-                        <span class="text-red-500 ml-2">
-                            <?php echo $data['title_err']; ?>
-                        </span>
-                    <?php endif; ?>
-                </form>
+            <form class="flex items-center mb-2"
+    action="<?php echo URLROOT; ?>/tags/edit/<?php echo $tag->tagId; ?>" method="post">
+    <input type="text" name="tag_name"
+        class="form-input border border-gray-300 rounded-md p-2 mr-2 focus:outline-none focus:border-blue-500 text-black"
+        value="<?php echo $tag->tagName; ?>">
+    <button type="submit"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Enregistrer
+    </button>
+    <!-- Display error message if it exists -->
+    <?php if (isset($data['title_err']) && !empty($data['title_err'])): ?>
+        <span class="text-red-500 ml-2">
+            <?php echo $data['title_err']; ?>
+        </span>
+    <?php endif; ?>
+</form>
+
 
                 <form class="flex items-center"
                     action="<?php echo URLROOT; ?>/tags/delete/<?php echo $tag->tagId; ?>" method="post">
@@ -133,6 +133,7 @@
 </div>
 
 </section>
+
 
     </section>
 
