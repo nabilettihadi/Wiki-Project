@@ -31,12 +31,11 @@ class Users extends Controller
 
       // Validate Email
       if (empty($data['email'])) {
-        $data['email_err'] = 'Pleae enter email';
-      } else {
-        // Check email
-        if ($this->userModel->findUserByEmail($data['email'])) {
-          $data['email_err'] = 'Email is already taken';
-        }
+        $data['email_err'] = 'Please enter email';
+      } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        $data['email_err'] = 'Invalid email format';
+      } elseif ($this->userModel->findUserByEmail($data['email'])) {
+        $data['email_err'] = 'Email is already taken';
       }
 
       // Validate Name
@@ -46,9 +45,17 @@ class Users extends Controller
 
       // Validate Password
       if (empty($data['password'])) {
-        $data['password_err'] = 'Pleae enter password';
-      } elseif (strlen($data['password']) < 6) {
-        $data['password_err'] = 'Password must be at least 6 characters';
+        $data['password_err'] = 'Please enter password';
+      } elseif (strlen($data['password']) < 8) {
+        $data['password_err'] = 'Password must be at least 8 characters';
+      } elseif (!preg_match('/[A-Z]/', $data['password'])) {
+        $data['password_err'] = 'Password must contain at least one uppercase letter';
+      } elseif (!preg_match('/[a-z]/', $data['password'])) {
+        $data['password_err'] = 'Password must contain at least one lowercase letter';
+      } elseif (!preg_match('/\d/', $data['password'])) {
+        $data['password_err'] = 'Password must contain at least one digit';
+      } elseif (!preg_match('/[^A-Za-z\d]/', $data['password'])) {
+        $data['password_err'] = 'Password must contain at least one special character';
       }
 
 
