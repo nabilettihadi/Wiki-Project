@@ -16,12 +16,11 @@
 <body class="font-sans bg-gray-200">
 
     <!-- Admin Dashboard Section -->
-    <section class="flex">
+    <section class="flex flex-col lg:flex-row min-h-screen">
 
         <!-- Sidebar Section -->
-        <!-- Sidebar Section -->
-        <aside class="w-1/5 bg-indigo-800 text-white p-8 fixed top-0 h-full">
-            <div class="flex justify-between items-center mb-8">
+        <aside class="lg:w-1/5 bg-indigo-800 text-white p-8 hidden lg:block">
+            <div class="mb-8">
                 <h2 class="text-4xl font-extrabold">
                     <?php echo $_SESSION['user_name']; ?>
                 </h2>
@@ -52,8 +51,33 @@
             </nav>
         </aside>
 
+        <!-- Mobile Navigation (Hamburger Menu) -->
+        <nav id="mobile-menu" class="lg:hidden fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden">
+            <div class="flex justify-end p-4">
+                <button id="close-mobile-menu"
+                    class="text-white p-2 focus:outline-none focus:bg-gray-700 focus:text-white">✕</button>
+            </div>
+            <div class="flex items-center justify-center h-screen">
+                <ul class="list-reset flex flex-col items-center space-y-4">
+                    <?php foreach ($navItems as $item): ?>
+                        <li class="nav-mobile-link">
+                            <a href="<?php echo $item['url']; ?>" class="text-white hover:text-gray-300">
+                                <?php echo $item['text']; ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Mobile Navbar (Hamburger) -->
+        <div class="lg:hidden">
+            <button id="mobile-menu-button"
+                class="text-white p-2 focus:outline-none focus:bg-gray-700 focus:text-white">☰</button>
+        </div>
+
         <!-- Main Content Section -->
-        <div class="ml-72 p-8 rounded-md shadow-md overflow-x-hidden h-screen">
+        <div class="p-8 rounded-md shadow-md overflow-x-hidden h-screen">
             <div class="mb-4">
                 <input id="searchInput" class="bg-gray-100 p-4 w-full md:w-72 rounded-md outline-none"
                     placeholder="Rechercher par titre, tags, catégorie ou contenu..." />
@@ -88,14 +112,12 @@
                             </div>
                             <div class="flex justify-between items-center px-6 pt-4 pb-2">
                                 <a href="<?php echo URLROOT; ?>/wikis/show/<?php echo $wiki->wiki_id; ?>"
-                                    class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">
-                                    Read More
-                                </a>
+                                    class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">Read
+                                    More</a>
                                 <?php if ($wiki->author_id == $_SESSION['user_id']): ?>
                                     <a href="<?php echo URLROOT; ?>/wikis/edit/<?php echo $wiki->wiki_id; ?>"
-                                        class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700 ml-2 transition">
-                                        <i class="fas fa-edit"></i> Modifier
-                                    </a>
+                                        class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700 ml-2 transition"><i
+                                            class="fas fa-edit"></i> Modifier</a>
                                     <form class="d-inline"
                                         action="<?php echo URLROOT; ?>/wikis/delete/<?php echo $wiki->wiki_id; ?>" method="post"
                                         onsubmit="return confirm('Are you sure you want to delete this wiki?');">
@@ -104,7 +126,6 @@
                                     </form>
                                 <?php endif; ?>
                             </div>
-
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>
@@ -113,7 +134,6 @@
             </div>
         </div>
 
-
         <!-- Display search results here -->
         <div id="searchResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
 
@@ -121,6 +141,14 @@
 
     <!-- Ajoutez cette balise de script avant la fermeture du corps body -->
     <script>
+        document.getElementById('mobile-menu-button').addEventListener('click', function () {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        document.getElementById('close-mobile-menu').addEventListener('click', function () {
+            document.getElementById('mobile-menu').classList.add('hidden');
+        });
+
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('searchInput');
             const searchResultsContainer = document.getElementById('searchResultsContainer');
@@ -194,36 +222,35 @@
                         resultElement.classList.add('max-w-sm', 'rounded', 'overflow-hidden', 'shadow-lg');
 
                         resultElement.innerHTML = `
-                        <img class="w-full" src="https://v1.tailwindcss.com/img/card-top.jpg" alt="Sunset in the mountains">
-                        <div class="px-6 py-4">
-                            <div class="flex justify-between items-center mb-2">
-                                <div class="font-bold text-xl">${result.title}</div>
+                            <img class="w-full" src="https://v1.tailwindcss.com/img/card-top.jpg" alt="Sunset in the mountains">
+                            <div class="px-6 py-4">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="font-bold text-xl">${result.title}</div>
+                                </div>
+                                <p class="text-gray-700 text-base break-words">${result.content}</p>
+                                <p class="card-text"><strong>Catégorie:</strong>${result.category_name}</p>
                             </div>
-                            <p class="text-gray-700 text-base break-words">${result.content}</p>
-                            <p class="card-text"><strong>Catégorie:</strong>${result.category_name}</p>
-                        </div>
-                        <div class="px-3 pt-4 pb-2">
-                            <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                                #${result.tags || 'None'}
-                            </span>
-                        </div>
-                        <div class="px-6 pt-4 pb-2">
-                        <div class="flex justify-between items-center px-6 pt-4 pb-2">
-                            <a href="<?php echo URLROOT; ?>/wikis/show/${result.wiki_id}" class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">
-                                Read More
-                            </a>
-                            ${result.author_id == <?php echo $_SESSION['user_id']; ?> ? `
-                                <a href="<?php echo URLROOT; ?>/wikis/edit/${result.wiki_id}" class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700 ml-2 transition">
-                                    <i class="fas fa-edit"></i> Modifier
-                                </a>
-                                <form id="deleteForm${result.wiki_id}" class="d-inline" action="<?php echo URLROOT; ?>/wikis/delete/${result.wiki_id}" method="post">
-                                    <button type="submit" class="mt-2 bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-700 transition delete-wiki">Supprimer</button>
-                                </form>
-                            ` : ''}
-                        </div>
-</div>
-
-                    `;
+                            <div class="px-3 pt-4 pb-2">
+                                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                                    #${result.tags || 'None'}
+                                </span>
+                            </div>
+                            <div class="px-6 pt-4 pb-2">
+                                <div class="flex justify-between items-center px-6 pt-4 pb-2">
+                                    <a href="<?php echo URLROOT; ?>/wikis/show/${result.wiki_id}" class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">
+                                        Read More
+                                    </a>
+                                    ${result.author_id == <?php echo $_SESSION['user_id']; ?> ? `
+                                        <a href="<?php echo URLROOT; ?>/wikis/edit/${result.wiki_id}" class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700 ml-2 transition">
+                                            <i class="fas fa-edit"></i> Modifier
+                                        </a>
+                                        <form id="deleteForm${result.wiki_id}" class="d-inline" action="<?php echo URLROOT; ?>/wikis/delete/${result.wiki_id}" method="post">
+                                            <button type="submit" class="mt-2 bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-700 transition delete-wiki">Supprimer</button>
+                                        </form>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `;
 
                         searchResultsContainer.appendChild(resultElement);
                     });
@@ -237,9 +264,7 @@
         });
     </script>
 
-
     <?php require APPROOT . '/views/inc/footer.php'; ?>
 </body>
 
 </html>
-

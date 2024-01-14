@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+
     <title>
         <?php echo SITENAME; ?>
     </title>
@@ -14,40 +16,16 @@
 <body class="font-sans bg-gray-200">
 
     <!-- Admin Dashboard Section -->
-    <section class="flex h-screen">
-
-        <!-- Navbar for Small Screens -->
-        <nav class="md:hidden w-full bg-indigo-800 text-white p-4 fixed top-0 z-50">
-            <div class="flex justify-between items-center">
-                <h2 class="text-2xl font-extrabold">
-                    <?php echo $_SESSION['user_name']; ?>
-                </h2>
-                <button id="toggleSidebar" class="focus:outline-none">
-                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16m-7 6h7"></path>
-                    </svg>
-                </button>
-            </div>
-        </nav>
+    <section class="flex flex-col lg:flex-row min-h-screen">
 
         <!-- Sidebar Section -->
-        <aside
-            class="w-1/5 bg-indigo-800 text-white p-8 fixed top-0 h-full transition-all duration-300 transform -translate-x-full md:translate-x-0 md:relative md:static">
-            <div class="hidden md:flex justify-between items-center mb-4 md:mb-8">
-                <h2 class="text-2xl md:text-4xl font-extrabold">
+        <aside class="lg:w-1/5 bg-indigo-800 text-white p-8 hidden lg:block">
+            <div class="mb-8">
+                <h2 class="text-4xl font-extrabold">
                     <?php echo $_SESSION['user_name']; ?>
                 </h2>
-                <button id="toggleSidebar" class="md:hidden focus:outline-none">
-                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16m-7 6h7"></path>
-                    </svg>
-                </button>
             </div>
-            <nav class="hidden md:block">
+            <nav>
                 <ul class="space-y-4">
                     <?php
                     $navItems = [
@@ -61,7 +39,7 @@
                         ?>
                         <li>
                             <a href="<?php echo $item['url']; ?>"
-                                class="flex items-center text-base md:text-lg py-2 px-4 rounded hover:bg-indigo-700">
+                                class="flex items-center text-lg py-2 px-4 rounded hover:bg-indigo-700">
                                 <span class="mr-2">
                                     <?php echo $item['icon']; ?>
                                 </span>
@@ -73,8 +51,33 @@
             </nav>
         </aside>
 
+        <!-- Mobile Navigation (Hamburger Menu) -->
+        <nav id="mobile-menu" class="lg:hidden fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden">
+            <div class="flex justify-end p-4">
+                <button id="close-mobile-menu"
+                    class="text-white p-2 focus:outline-none focus:bg-gray-700 focus:text-white">✕</button>
+            </div>
+            <div class="flex items-center justify-center h-screen">
+                <ul class="list-reset flex flex-col items-center space-y-4">
+                    <?php foreach ($navItems as $item): ?>
+                        <li class="nav-mobile-link">
+                            <a href="<?php echo $item['url']; ?>" class="text-white hover:text-gray-300">
+                                <?php echo $item['text']; ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Mobile Navbar (Hamburger) -->
+        <div class="lg:hidden">
+            <button id="mobile-menu-button"
+                class="text-white p-2 focus:outline-none focus:bg-gray-700 focus:text-white">☰</button>
+        </div>
+
         <!-- Main Content Section -->
-        <div class="w-3/4 p-4 md:p-8 ml-auto">
+        <div class="p-8 rounded-md shadow-md overflow-x-hidden h-screen">
 
             <!-- Dashboard Section -->
             <section class="container mx-auto my-8">
@@ -134,6 +137,13 @@
     </section>
 
     <script>
+        document.getElementById('mobile-menu-button').addEventListener('click', function () {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        document.getElementById('close-mobile-menu').addEventListener('click', function () {
+            document.getElementById('mobile-menu').classList.add('hidden');
+        });
         document.getElementById('toggleSidebar').addEventListener('click', function () {
             document.querySelector('aside').classList.toggle('-translate-x-full');
         });

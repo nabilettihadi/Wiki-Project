@@ -39,11 +39,9 @@ class Tags extends Controller
         $tags = $this->tagModel->getTags();
         $totalTags = $this->tagModel->getTotalTags();
 
-
         $data = [
             'tags' => $tags,
             'totalTags' => $totalTags,
-
         ];
 
         $this->view('tags/index', $data);
@@ -108,29 +106,28 @@ class Tags extends Controller
     }
     public function edit($id)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
             $data = [
                 'id' => $id,
                 'tag_name' => trim($_POST['tag_name']),
-                'category_id' => $_SESSION['user_id'],
-                'title_err' => ''
+                'tag_name_err' => ''
             ];
 
             if (empty($data['tag_name'])) {
-                $data['title_err'] = 'Please enter a name';
+                $data['tag_name_err'] = 'Please enter a tag name';
             }
 
-            if (empty($data['title_err'])) {
+            if (empty($data['tag_name_err'])) {
                 if ($this->tagModel->updateTag($data)) {
                     flash('tag_message', 'Tag Updated');
-                    redirect('tags');
+                    redirect('tags/index2');
                 } else {
                     die('Something went wrong');
                 }
             } else {
-                $this->view('tags/edit', $data);
+                $data['tags'] = $this->tagModel->getTags();
+                $this->view('tags/index', $data);
             }
         } else {
             $tag = $this->tagModel->getTagById($id);
@@ -140,19 +137,18 @@ class Tags extends Controller
             }
 
             if ($tag->category_id != $_SESSION['user_id']) {
-                redirect('tags');
+                redirect('tags/index2');
             }
 
             $data = [
                 'id' => $id,
-                'tag_name' => $tag->tag_name,
-                'title_err' => ''
+                'tag_name' => $tag->tagName,
+                'tag_name_err' => ''
             ];
 
-            $this->view('tags/edit', $data);
+            $this->view('tags/index', $data);
         }
     }
-
     public function filterByCategory()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -171,5 +167,4 @@ class Tags extends Controller
             redirect('tags');
         }
     }
-
 }
