@@ -37,25 +37,34 @@
             </nav>
         </aside>
 
-        <!-- Mobile Navigation (Hamburger Menu) -->
-        <nav id="mobile-menu" class="lg:hidden fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden">
-            <div class="flex justify-end p-4">
-                <button id="close-mobile-menu"
-                    class="text-white p-2 focus:outline-none focus:bg-gray-700 focus:text-white">
-                    ✕
-                </button>
-            </div>
-            <div class="flex items-center justify-center h-screen">
-                <ul class="list-reset flex flex-col items-center">
-                    <li class="nav-mobile-link"><a href="<?php echo URLROOT; ?>/wikis/index">Dashboard</a></li>
-                    <li class="nav-mobile-link"><a href="<?php echo URLROOT; ?>/wikis/index1">Manage Wikis</a></li>
-                    <li class="nav-mobile-link"><a href="<?php echo URLROOT; ?>/categories/index2">Manage Categories</a>
-                    </li>
-                    <li class="nav-mobile-link"><a href="<?php echo URLROOT; ?>/tags/index2">Manage Tags</a></li>
-                    <li class="nav-mobile-link"><a href="<?php echo URLROOT; ?>/users/logout">Logout</a></li>
-                </ul>
-            </div>
-        </nav>
+<!-- Mobile Navigation (Hamburger Menu) -->
+<nav id="mobile-menu" class="lg:hidden fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden">
+    <div class="flex justify-end p-4">
+        <button id="close-mobile-menu" class="text-white p-2 focus:outline-none focus:bg-gray-700 focus:text-white">
+            ✕
+        </button>
+    </div>
+    <div class="flex items-center justify-center h-screen">
+        <ul class="list-reset flex flex-col items-center space-y-4">
+            <li class="nav-mobile-link">
+                <a href="<?php echo URLROOT; ?>/wikis/index" class="text-white hover:text-gray-300">Dashboard</a>
+            </li>
+            <li class="nav-mobile-link">
+                <a href="<?php echo URLROOT; ?>/wikis/index1" class="text-white hover:text-gray-300">Manage Wikis</a>
+            </li>
+            <li class="nav-mobile-link">
+                <a href="<?php echo URLROOT; ?>/categories/index2" class="text-white hover:text-gray-300">Manage Categories</a>
+            </li>
+            <li class="nav-mobile-link">
+                <a href="<?php echo URLROOT; ?>/tags/index2" class="text-white hover:text-gray-300">Manage Tags</a>
+            </li>
+            <li class="nav-mobile-link">
+                <a href="<?php echo URLROOT; ?>/users/logout" class="text-white hover:text-gray-300">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
 
         <!-- Mobile Navbar (Hamburger) -->
         <div class="lg:hidden">
