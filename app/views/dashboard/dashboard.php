@@ -17,7 +17,7 @@
 
     <section class="flex h-screen">
 
-        <aside class="w-1/4 bg-gradient-to-b from-indigo-700 to-indigo-800 text-white p-8"
+        <aside class="w-1/5 bg-gradient-to-b from-indigo-700 to-indigo-800 text-white p-8"
             style="position: sticky; top: 0; height: 100vh;">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-4xl font-extrabold">

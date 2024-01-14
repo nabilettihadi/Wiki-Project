@@ -38,9 +38,7 @@
         <select name="category_id" id="categoryId"
             class="form-select w-full px-4 py-2 border rounded-md focus:outline-none focus:border-purple-500">
             <?php foreach ($data['categories'] as $category): ?>
-                <option value="<?php echo $category->category_id; ?>">
-                    <?php echo $category->category_name; ?>
-                </option>
+                <option value="<?php echo $category->category_id; ?>"><?php echo $category->category_name; ?></option>
             <?php endforeach; ?>
         </select>
     </div>

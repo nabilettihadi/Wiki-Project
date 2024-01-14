@@ -2,7 +2,7 @@
 
 <?php flash('category_message'); ?>
 
-<div class="flex justify-between items-center mb-8">
+<div class="flex justify-between items-center mb-8 mt-4"> <!-- Added mt-4 for margin-top -->
     <h1 class="text-4xl font-bold text-blue-800">Categories</h1>
     <a href="<?php echo URLROOT; ?>/Categories/add"
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
@@ -39,4 +39,5 @@
 <?php endif; ?>
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
+
 

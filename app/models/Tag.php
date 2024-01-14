@@ -51,20 +51,28 @@ class Tag
         }
     }
 
+
     public function updateTag($data)
     {
-        $this->db->query('UPDATE tags SET tag_name = :tag_name, category_id = :category_id WHERE tag_id = :id');
-        $this->db->bind(':id', $data['id']);
-        $this->db->bind(':tag_name', $data['tag_name']);
-        $this->db->bind(':category_id', $data['category_id']);
-
-        if ($this->db->execute()) {
-            return true;
-        } else {
+        try {
+            $this->db->query('UPDATE tags SET tag_name = :tag_name WHERE tag_id = :id');
+            $this->db->bind(':id', $data['id']);
+            $this->db->bind(':tag_name', $data['tag_name']);
+            // $this->db->bind(':category_id', $data['category_id']);
+    
+            if ($this->db->execute()) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            // Output the specific error message for debugging
+            echo 'Error updating tag: ' . $e->getMessage();
             return false;
         }
     }
-
+    
+    
     public function getTagById($id)
     {
         $this->db->query('SELECT * FROM tags WHERE tag_id = :id');
@@ -76,8 +84,8 @@ class Tag
     }
 
     public function getTagsByCategory($categoryId)
-    {
-        $sql = 'SELECT *,
+{
+    $sql = 'SELECT *,
             tags.tag_id as tagId,
             tags.tag_name as tagName,
             categories.category_id as categoryId,
@@ -86,21 +94,21 @@ class Tag
             LEFT JOIN categories
             ON tags.category_id = categories.category_id';
 
-        if (!empty($categoryId)) {
-            $sql .= ' WHERE tags.category_id = :category_id';
-        }
-
-        $this->db->query($sql);
-
-        if (!empty($categoryId)) {
-            $this->db->bind(':category_id', $categoryId);
-        }
-
-        $results = $this->db->resultSet();
-
-        return $results;
+    if (!empty($categoryId)) {
+        $sql .= ' WHERE tags.category_id = :category_id';
     }
-    public function getTotalTags()
+
+    $this->db->query($sql);
+
+    if (!empty($categoryId)) {
+        $this->db->bind(':category_id', $categoryId);
+    }
+
+    $results = $this->db->resultSet();
+
+    return $results;
+}
+public function getTotalTags()
     {
         $this->db->query('SELECT COUNT(*) as total FROM tags');
         $row = $this->db->single();
@@ -109,13 +117,15 @@ class Tag
     }
 
     public function tagExists($tagName)
-    {
-        $this->db->query('SELECT * FROM tags WHERE tag_name = :tag_name');
-        $this->db->bind(':tag_name', $tagName);
+{
+    $this->db->query('SELECT * FROM tags WHERE tag_name = :tag_name');
+    $this->db->bind(':tag_name', $tagName);
 
-        $row = $this->db->single();
+    $row = $this->db->single();
 
-        return ($row) ? true : false;
-    }
+    return ($row) ? true : false;
+}
+
+
 
 }
